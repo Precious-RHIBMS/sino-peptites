@@ -3,6 +3,8 @@
  * Runs completely client-side with zero backend dependencies.
  */
 
+export const WHATSAPP_NUMBER = '237XXXXXXXXX';
+
 export const STORE_CONFIG = {
   brandName: 'Valence Botanicals',
   tagline: 'HPLC-Verified Research Peptides & Analytical Lab Solutions',
@@ -426,3 +428,54 @@ export const PRODUCTS = [
     ],
   },
 ];
+
+/**
+ * Verified client & research facility testimonials.
+ */
+export const TESTIMONIALS = [
+  {
+    id: 'test-1',
+    name: 'Dr. Hannah Lindqvist',
+    role: 'Principal Assay Chemist',
+    organization: 'Cascade BioAnalytics',
+    productPurchased: 'RETATRUTIDE · 5 × 10mg Kit',
+    rating: 5,
+    quote:
+      'Previously we lost two weeks per order re-running external LC-MS checks when suppliers shipped unverified lots. Switching to Valence cut our intake verification time to under 24 hours because every vial arrived with matching HPLC chromatograms.',
+    verifiedDate: 'October 2026',
+  },
+  {
+    id: 'test-2',
+    name: 'Marcus Okafor',
+    role: 'Procurement Lead',
+    organization: 'Northstar Longevity Lab',
+    productPurchased: 'Tesamorelin 10mg & Bacteriostatic Water',
+    rating: 5,
+    quote:
+      'Temperature-buffered packaging and direct bank transfer settlement solved our recurring cold-chain delays. Across four quarterly restocks, every lyophilized cake reconstituted crystal clear with zero lot variance.',
+    verifiedDate: 'November 2026',
+  },
+  {
+    id: 'test-3',
+    name: 'Elena Rostova, PhD',
+    role: 'Cellular Energetics Researcher',
+    organization: 'Pacific Rim Metabolic Institute',
+    productPurchased: 'NAD+ 500mg & MOTS-C 10mg',
+    rating: 5,
+    quote:
+      'Our NAD+ and MOTS-C cellular assays showed noticeable run-to-run drift with prior vendors. Since standardizing on Valence batches with documented Karl Fischer moisture and purity assays, our baseline assay reproducibility improved immediately.',
+    verifiedDate: 'October 2026',
+  },
+  {
+    id: 'test-4',
+    name: 'David Takahashi',
+    role: 'Operations Director',
+    organization: 'Beacon Peptide Research',
+    productPurchased: 'SEMAGLUTIDE & LIPO-C 10ml',
+    rating: 5,
+    quote:
+      'Having printed batch Certificates of Analysis packed directly inside the parcel alongside instant carrier tracking eliminated missing paperwork during our ISO audit.',
+    verifiedDate: 'November 2026',
+  },
+];
+

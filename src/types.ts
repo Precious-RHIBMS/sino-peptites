@@ -18,6 +18,7 @@ export interface ProductSpec {
 export interface Product {
   id: string;
   sku: string;
+  lotNumber?: string;
   name: string;
   categoryId: string;
   categoryName: string;
@@ -54,6 +55,7 @@ export interface CartItem {
   productId: string;
   variantId: string;
   sku: string;
+  lotNumber?: string;
   name: string;
   categoryName: string;
   variantLabel: string;
@@ -61,6 +63,17 @@ export interface CartItem {
   quantity: number;
   image: string;
   imageBg?: string;
+}
+
+export interface Testimonial {
+  id: string;
+  name: string;
+  role: string;
+  organization: string;
+  productPurchased: string;
+  rating: number;
+  quote: string;
+  verifiedDate: string;
 }
 
 export type PolicyType = 'shipping' | 'privacy' | 'terms' | null;

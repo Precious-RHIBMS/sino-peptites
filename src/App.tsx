@@ -6,13 +6,14 @@ import { CheckoutView } from './components/CheckoutView';
 import { CookieBanner } from './components/CookieBanner';
 import { Footer } from './components/Footer';
 import { Hero } from './components/Hero';
-import { LiveChatWidget } from './components/LiveChatWidget';
 import { Navbar } from './components/Navbar';
 import { PolicyModal } from './components/PolicyModal';
 import { ProductGrid, SortOption } from './components/ProductGrid';
 import { ProductModal } from './components/ProductModal';
 import { StoryAndCertificates } from './components/StoryAndCertificates';
-import { CATEGORIES, CERTIFICATES, PRODUCTS, STORE_CONFIG } from './products.js';
+import { TestimonialsSection } from './components/TestimonialsSection';
+import { WhatsAppFloatButton } from './components/WhatsAppFloatButton';
+import { CATEGORIES, CERTIFICATES, PRODUCTS, STORE_CONFIG, TESTIMONIALS } from './products.js';
 import { CartItem, PolicyType, Product, ProductVariant } from './types';
 
 /**
@@ -29,6 +30,7 @@ export default function App() {
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
   const [isCheckoutView, setIsCheckoutView] = useState<boolean>(false);
   const [activePolicy, setActivePolicy] = useState<PolicyType>(null);
+  const [selectedCountry, setSelectedCountry] = useState<string>('United States');
 
   // Derived cart totals recalculated on every state update
   const cartCount = useMemo(
@@ -129,6 +131,7 @@ export default function App() {
           productId: product.id,
           variantId: variant.id,
           sku: product.sku,
+          lotNumber: product.lotNumber,
           name: product.name,
           categoryName: product.categoryName,
           variantLabel: variant.label,
@@ -196,6 +199,8 @@ export default function App() {
             subtotal={subtotal}
             shippingFee={shippingFee}
             total={grandTotal}
+            selectedCountry={selectedCountry}
+            onCountryChange={setSelectedCountry}
             onBackToStore={() => {
               setIsCheckoutView(false);
               window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -228,12 +233,16 @@ export default function App() {
               onSearchChange={setSearchQuery}
               sortBy={sortBy}
               onSortChange={setSortBy}
+              selectedCountry={selectedCountry}
               onSelectProduct={setSelectedProduct}
               onResetFilters={handleResetFilters}
             />
 
             {/* 6. Our Story & Batch Certificates */}
             <StoryAndCertificates certificates={CERTIFICATES} />
+
+            {/* 7. Customer Testimonials */}
+            <TestimonialsSection testimonials={TESTIMONIALS} />
           </>
         )}
       </main>
@@ -249,6 +258,7 @@ export default function App() {
       {/* 8. Product Detail Modal */}
       <ProductModal
         product={selectedProduct}
+        selectedCountry={selectedCountry}
         onClose={() => setSelectedProduct(null)}
         onAddToCart={handleAddToCart}
       />
@@ -261,6 +271,7 @@ export default function App() {
         shippingFee={shippingFee}
         freeThreshold={STORE_CONFIG.freeShippingThreshold}
         total={grandTotal}
+        selectedCountry={selectedCountry}
         onClose={() => setIsCartOpen(false)}
         onUpdateQuantity={handleUpdateCartQuantity}
         onRemoveItem={handleRemoveCartItem}
@@ -276,8 +287,8 @@ export default function App() {
         onClose={() => setActivePolicy(null)}
       />
 
-      {/* 11. Floating Live Chat & Dismissible Cookie Banner */}
-      <LiveChatWidget />
+      {/* 11. Floating WhatsApp Chat & Dismissible Cookie Banner */}
+      <WhatsAppFloatButton />
       <CookieBanner onOpenPrivacy={setActivePolicy} />
     </div>
   );

@@ -8,7 +8,9 @@ import {
   Smartphone,
 } from 'lucide-react';
 import { CartItem } from '../types';
+import { buildCartWhatsAppUrl } from '../utils/whatsapp';
 import { SafeImage } from './SafeImage';
+import { WhatsAppIcon } from './WhatsAppIcon';
 
 export type PaymentMethod = 'card' | 'bank-transfer' | 'mobile-money';
 
@@ -17,6 +19,8 @@ interface CheckoutViewProps {
   subtotal: number;
   shippingFee: number;
   total: number;
+  selectedCountry: string;
+  onCountryChange: (country: string) => void;
   onBackToStore: () => void;
   onOrderComplete: () => void;
 }
@@ -42,6 +46,8 @@ export function CheckoutView({
   subtotal,
   shippingFee,
   total,
+  selectedCountry,
+  onCountryChange,
   onBackToStore,
   onOrderComplete,
 }: CheckoutViewProps) {
@@ -51,7 +57,8 @@ export function CheckoutView({
   const [street, setStreet] = useState('');
   const [city, setCity] = useState('');
   const [postalCode, setPostalCode] = useState('');
-  const [country, setCountry] = useState('United States');
+  const country = selectedCountry;
+  const setCountry = onCountryChange;
   const [notes, setNotes] = useState('');
 
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('card');
@@ -319,11 +326,13 @@ export function CheckoutView({
                       className="w-full px-3.5 py-2.5 text-sm bg-[#050B14] text-white rounded-lg border border-white/15 focus:outline-none focus:border-[#1E90FF]"
                     >
                       <option value="United States">United States</option>
+                      <option value="Cameroon">Cameroon</option>
                       <option value="Canada">Canada</option>
                       <option value="United Kingdom">United Kingdom</option>
                       <option value="Germany">Germany</option>
                       <option value="Kenya">Kenya</option>
                       <option value="Ghana">Ghana</option>
+                      <option value="Nigeria">Nigeria</option>
                       <option value="Singapore">Singapore</option>
                       <option value="Australia">Australia</option>
                     </select>
@@ -581,13 +590,35 @@ export function CheckoutView({
                 </div>
               </div>
 
-              <button
-                type="submit"
-                className="w-full inline-flex items-center justify-center gap-2 py-3.5 px-5 rounded-xl bg-[#1E90FF] hover:bg-[#197FE6] text-white text-sm font-semibold shadow-lg shadow-[#1E90FF]/20 transition-all"
-              >
-                <Lock className="h-4 w-4" aria-hidden="true" />
-                Place Order · <span className="font-mono tabular-nums">${total.toFixed(2)}</span>
-              </button>
+              <div className="space-y-2.5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  <button
+                    type="submit"
+                    className="inline-flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-[#1E90FF] hover:bg-[#197FE6] text-white text-xs sm:text-sm font-semibold shadow-lg shadow-[#1E90FF]/20 transition-all whitespace-nowrap"
+                  >
+                    <Lock className="h-4 w-4 shrink-0" aria-hidden="true" />
+                    Place Order · <span className="font-mono tabular-nums">${total.toFixed(2)}</span>
+                  </button>
+
+                  <a
+                    href={buildCartWhatsAppUrl({
+                      items,
+                      total,
+                      country,
+                    })}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-[#050B14] border border-[#25D366]/50 text-[#25D366] hover:bg-[#25D366]/10 text-xs sm:text-sm font-semibold transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#25D366]"
+                  >
+                    <WhatsAppIcon className="h-4 w-4 shrink-0" />
+                    Order via WhatsApp
+                  </a>
+                </div>
+
+                <p className="text-xs text-slate-400">
+                  Prefer to talk first? Order through WhatsApp and we&apos;ll confirm everything with you.
+                </p>
+              </div>
             </aside>
           </form>
         )}

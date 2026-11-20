@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
 import { ArrowRight, Minus, Plus, ShoppingBag, Trash2, X } from 'lucide-react';
 import { CartItem } from '../types';
+import { buildCartWhatsAppUrl } from '../utils/whatsapp';
 import { SafeImage } from './SafeImage';
+import { WhatsAppIcon } from './WhatsAppIcon';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -10,6 +12,7 @@ interface CartDrawerProps {
   shippingFee: number;
   freeThreshold: number;
   total: number;
+  selectedCountry: string;
   onClose: () => void;
   onUpdateQuantity: (variantId: string, delta: number) => void;
   onRemoveItem: (variantId: string) => void;
@@ -27,6 +30,7 @@ export function CartDrawer({
   shippingFee,
   freeThreshold,
   total,
+  selectedCountry,
   onClose,
   onUpdateQuantity,
   onRemoveItem,
@@ -211,14 +215,36 @@ export function CartDrawer({
               </div>
             </div>
 
-            <button
-              type="button"
-              onClick={onProceedToCheckout}
-              className="w-full inline-flex items-center justify-center gap-2 py-3.5 px-5 rounded-xl bg-[#1E90FF] hover:bg-[#197FE6] text-white text-sm font-semibold shadow-lg shadow-[#1E90FF]/20 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E90FF]"
-            >
-              Proceed to Checkout
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </button>
+            <div className="space-y-2.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <button
+                  type="button"
+                  onClick={onProceedToCheckout}
+                  className="inline-flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-[#1E90FF] hover:bg-[#197FE6] text-white text-xs sm:text-sm font-semibold shadow-lg shadow-[#1E90FF]/20 transition-all whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E90FF]"
+                >
+                  Checkout
+                  <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
+                </button>
+
+                <a
+                  href={buildCartWhatsAppUrl({
+                    items,
+                    total,
+                    country: selectedCountry,
+                  })}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-[#0A1220] border border-[#25D366]/50 text-[#25D366] hover:bg-[#25D366]/10 text-xs sm:text-sm font-semibold transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#25D366]"
+                >
+                  <WhatsAppIcon className="h-4 w-4 shrink-0" />
+                  Order via WhatsApp
+                </a>
+              </div>
+
+              <p className="text-[11px] text-slate-400 leading-snug">
+                Prefer to talk first? Order through WhatsApp and we&apos;ll confirm everything with you.
+              </p>
+            </div>
           </div>
         )}
       </div>

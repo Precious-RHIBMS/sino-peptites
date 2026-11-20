@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Check, Minus, Plus, ShieldCheck, ShoppingBag, X } from 'lucide-react';
 import { Product, ProductVariant } from '../types';
+import { buildSingleProductWhatsAppUrl } from '../utils/whatsapp';
 import { SafeImage } from './SafeImage';
+import { WhatsAppIcon } from './WhatsAppIcon';
 
 interface ProductModalProps {
   product: Product | null;
+  selectedCountry: string;
   onClose: () => void;
   onAddToCart: (product: Product, variant: ProductVariant, quantity: number) => void;
 }
@@ -13,7 +16,7 @@ interface ProductModalProps {
  * Product Detail Modal featuring variant size/quantity selection, live price updates,
  * quantity stepper, batch purity metadata, and Add to Cart action.
  */
-export function ProductModal({ product, onClose, onAddToCart }: ProductModalProps) {
+export function ProductModal({ product, selectedCountry, onClose, onAddToCart }: ProductModalProps) {
   const [selectedVariantId, setSelectedVariantId] = useState<string>('');
   const [quantity, setQuantity] = useState<number>(1);
   const [justAdded, setJustAdded] = useState<boolean>(false);
@@ -170,51 +173,74 @@ export function ProductModal({ product, onClose, onAddToCart }: ProductModalProp
               </div>
             </div>
 
-            {/* Quantity Picker + Add to Cart */}
-            <div className="mt-7 pt-5 border-t border-white/10 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-              <div className="inline-flex items-center justify-between bg-[#050B14] border border-white/15 rounded-xl px-2 py-1.5">
-                <button
-                  type="button"
-                  onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                  aria-label="Decrease quantity"
-                  className="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
-                >
-                  <Minus className="h-4 w-4" />
-                </button>
-                <span
-                  className="w-10 text-center font-mono text-sm font-semibold text-white tabular-nums"
-                  aria-live="polite"
-                >
-                  {quantity}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setQuantity((q) => Math.min(activeVariant.stock, q + 1))}
-                  aria-label="Increase quantity"
-                  className="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
-                >
-                  <Plus className="h-4 w-4" />
-                </button>
+            {/* Quantity Picker + Add to Cart & Order via WhatsApp */}
+            <div className="mt-7 pt-5 border-t border-white/10 space-y-3">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                <div className="inline-flex items-center justify-between bg-[#050B14] border border-white/15 rounded-xl px-2 py-1.5 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                    aria-label="Decrease quantity"
+                    className="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
+                  >
+                    <Minus className="h-4 w-4" />
+                  </button>
+                  <span
+                    className="w-10 text-center font-mono text-sm font-semibold text-white tabular-nums"
+                    aria-live="polite"
+                  >
+                    {quantity}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setQuantity((q) => Math.min(activeVariant.stock, q + 1))}
+                    aria-label="Increase quantity"
+                    className="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
+                  >
+                    <Plus className="h-4 w-4" />
+                  </button>
+                </div>
+
+                <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  <button
+                    type="button"
+                    onClick={handleAdd}
+                    className="inline-flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-[#1E90FF] hover:bg-[#197FE6] text-white text-xs sm:text-sm font-semibold shadow-lg shadow-[#1E90FF]/20 transition-all whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E90FF]"
+                  >
+                    {justAdded ? (
+                      <>
+                        <Check className="h-4 w-4 shrink-0" aria-hidden="true" />
+                        Added · ${lineTotal.toFixed(2)}
+                      </>
+                    ) : (
+                      <>
+                        <ShoppingBag className="h-4 w-4 shrink-0" aria-hidden="true" />
+                        Add to Cart ·{' '}
+                        <span className="font-mono tabular-nums">${lineTotal.toFixed(2)}</span>
+                      </>
+                    )}
+                  </button>
+
+                  <a
+                    href={buildSingleProductWhatsAppUrl({
+                      product,
+                      variant: activeVariant,
+                      quantity,
+                      country: selectedCountry,
+                    })}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-[#050B14] border border-[#25D366]/50 text-[#25D366] hover:bg-[#25D366]/10 text-xs sm:text-sm font-semibold transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#25D366]"
+                  >
+                    <WhatsAppIcon className="h-4 w-4 shrink-0" />
+                    Order via WhatsApp
+                  </a>
+                </div>
               </div>
 
-              <button
-                type="button"
-                onClick={handleAdd}
-                className="flex-1 inline-flex items-center justify-center gap-2 py-3.5 px-5 rounded-xl bg-[#1E90FF] hover:bg-[#197FE6] text-white text-sm font-semibold shadow-lg shadow-[#1E90FF]/20 transition-all whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E90FF]"
-              >
-                {justAdded ? (
-                  <>
-                    <Check className="h-4 w-4" aria-hidden="true" />
-                    Added to Cart · ${lineTotal.toFixed(2)}
-                  </>
-                ) : (
-                  <>
-                    <ShoppingBag className="h-4 w-4" aria-hidden="true" />
-                    Add to Cart ·{' '}
-                    <span className="font-mono tabular-nums">${lineTotal.toFixed(2)}</span>
-                  </>
-                )}
-              </button>
+              <p className="text-xs text-slate-400">
+                Prefer to talk first? Order through WhatsApp and we&apos;ll confirm everything with you.
+              </p>
             </div>
           </div>
         </div>

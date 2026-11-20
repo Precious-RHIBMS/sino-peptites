@@ -1,6 +1,8 @@
 import { Search, SlidersHorizontal, X } from 'lucide-react';
 import { Category, Product } from '../types';
+import { buildSingleProductWhatsAppUrl } from '../utils/whatsapp';
 import { SafeImage } from './SafeImage';
+import { WhatsAppIcon } from './WhatsAppIcon';
 
 export type SortOption = 'featured' | 'price-asc' | 'price-desc';
 
@@ -13,6 +15,7 @@ interface ProductGridProps {
   onSearchChange: (value: string) => void;
   sortBy: SortOption;
   onSortChange: (sort: SortOption) => void;
+  selectedCountry: string;
   onSelectProduct: (product: Product) => void;
   onResetFilters: () => void;
 }
@@ -50,6 +53,7 @@ export function ProductGrid({
   onSearchChange,
   sortBy,
   onSortChange,
+  selectedCountry,
   onSelectProduct,
   onResetFilters,
 }: ProductGridProps) {
@@ -224,8 +228,8 @@ export function ProductGrid({
                     </div>
                   </div>
 
-                  {/* Price Range + Select Options CTA */}
-                  <div className="p-3.5 sm:p-4 pt-3 flex flex-col gap-3">
+                  {/* Price Range + Select Options & WhatsApp CTAs */}
+                  <div className="p-3.5 sm:p-4 pt-3 flex flex-col gap-2.5">
                     {priceInfo.saleOriginal ? (
                       <p className="text-sm font-mono font-medium tabular-nums flex items-center gap-2">
                         <span className="text-slate-500 line-through">{priceInfo.saleOriginal}</span>
@@ -237,13 +241,32 @@ export function ProductGrid({
                       </p>
                     )}
 
-                    <button
-                      type="button"
-                      onClick={() => onSelectProduct(product)}
-                      className="w-full py-2.5 px-3 rounded-lg bg-[#1E90FF] hover:bg-[#197FE6] text-white text-xs font-semibold transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E90FF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A1220]"
-                    >
-                      Select Options
-                    </button>
+                    <div className="flex flex-col gap-2">
+                      <button
+                        type="button"
+                        onClick={() => onSelectProduct(product)}
+                        className="w-full py-2.5 px-3 rounded-lg bg-[#1E90FF] hover:bg-[#197FE6] text-white text-xs font-semibold transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E90FF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A1220]"
+                      >
+                        Select Options
+                      </button>
+                      <a
+                        href={buildSingleProductWhatsAppUrl({
+                          product,
+                          variant: product.variants[0],
+                          quantity: 1,
+                          country: selectedCountry,
+                        })}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-[#050B14] border border-[#25D366]/45 text-[#25D366] hover:bg-[#25D366]/10 text-xs font-semibold transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#25D366]"
+                      >
+                        <WhatsAppIcon className="h-3.5 w-3.5 shrink-0" />
+                        Order via WhatsApp
+                      </a>
+                      <p className="text-[11px] text-slate-400 leading-snug">
+                        Prefer to talk first? Order through WhatsApp and we&apos;ll confirm everything with you.
+                      </p>
+                    </div>
                   </div>
                 </article>
               );
