@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Check, Minus, Plus, ShieldCheck, ShoppingBag, X } from 'lucide-react';
 import { Product, ProductVariant } from '../types';
 import { buildSingleProductWhatsAppUrl } from '../utils/whatsapp';
@@ -20,6 +20,7 @@ export function ProductModal({ product, selectedCountry, onClose, onAddToCart }:
   const [selectedVariantId, setSelectedVariantId] = useState<string>('');
   const [quantity, setQuantity] = useState<number>(1);
   const [justAdded, setJustAdded] = useState<boolean>(false);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (product && product.variants.length > 0) {
@@ -31,11 +32,18 @@ export function ProductModal({ product, selectedCountry, onClose, onAddToCart }:
 
   useEffect(() => {
     if (!product) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    closeButtonRef.current?.focus();
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   }, [product, onClose]);
 
   if (!product) return null;
@@ -65,12 +73,13 @@ export function ProductModal({ product, selectedCountry, onClose, onAddToCart }:
     >
       <div className="relative w-full max-w-3xl max-h-[92vh] overflow-y-auto bg-[#0A1220] border border-white/15 rounded-2xl shadow-2xl">
         <button
+          ref={closeButtonRef}
           type="button"
           onClick={onClose}
           aria-label="Close product details"
-          className="absolute top-4 right-4 z-10 p-2 rounded-lg bg-[#050B14]/85 text-slate-200 hover:text-white border border-white/15 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E90FF]"
+          className="absolute top-3 right-3 z-10 min-h-[44px] min-w-[44px] inline-flex items-center justify-center p-2 rounded-lg bg-[#050B14]/90 text-slate-200 hover:text-white border border-white/15 transition-colors"
         >
-          <X className="h-5 w-5" />
+          <X className="h-5 w-5" aria-hidden="true" />
         </button>
 
         <div className="grid grid-cols-1 md:grid-cols-12">
@@ -143,21 +152,22 @@ export function ProductModal({ product, selectedCountry, onClose, onAddToCart }:
                 <span className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2.5">
                   Select Vial Size / Pack Quantity
                 </span>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5" role="group" aria-label="Product size and pack options">
                   {product.variants.map((variant) => {
                     const isSelected = variant.id === activeVariant.id;
                     return (
                       <button
                         key={variant.id}
                         type="button"
+                        aria-pressed={isSelected}
                         onClick={() => {
                           setSelectedVariantId(variant.id);
                           setJustAdded(false);
                         }}
-                        className={`p-3 rounded-xl border text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E90FF] ${
+                        className={`min-h-[48px] p-3 rounded-xl border text-left transition-all ${
                           isSelected
                             ? 'bg-[#1E90FF]/15 border-[#1E90FF] text-white'
-                            : 'bg-[#050B14] border-white/10 text-slate-300 hover:border-white/30'
+                            : 'bg-[#050B14] border-white/10 text-slate-200 hover:border-white/30'
                         }`}
                       >
                         <span className="block text-xs font-semibold leading-snug">
@@ -176,14 +186,14 @@ export function ProductModal({ product, selectedCountry, onClose, onAddToCart }:
             {/* Quantity Picker + Add to Cart & Order via WhatsApp */}
             <div className="mt-7 pt-5 border-t border-white/10 space-y-3">
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                <div className="inline-flex items-center justify-between bg-[#050B14] border border-white/15 rounded-xl px-2 py-1.5 shrink-0">
+                <div className="inline-flex items-center justify-between bg-[#050B14] border border-white/15 rounded-xl px-1.5 py-1 shrink-0">
                   <button
                     type="button"
                     onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                     aria-label="Decrease quantity"
-                    className="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
+                    className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-lg text-slate-200 hover:text-white hover:bg-white/10 transition-colors"
                   >
-                    <Minus className="h-4 w-4" />
+                    <Minus className="h-4 w-4" aria-hidden="true" />
                   </button>
                   <span
                     className="w-10 text-center font-mono text-sm font-semibold text-white tabular-nums"
@@ -195,9 +205,9 @@ export function ProductModal({ product, selectedCountry, onClose, onAddToCart }:
                     type="button"
                     onClick={() => setQuantity((q) => Math.min(activeVariant.stock, q + 1))}
                     aria-label="Increase quantity"
-                    className="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
+                    className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-lg text-slate-200 hover:text-white hover:bg-white/10 transition-colors"
                   >
-                    <Plus className="h-4 w-4" />
+                    <Plus className="h-4 w-4" aria-hidden="true" />
                   </button>
                 </div>
 
@@ -205,7 +215,7 @@ export function ProductModal({ product, selectedCountry, onClose, onAddToCart }:
                   <button
                     type="button"
                     onClick={handleAdd}
-                    className="inline-flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-[#1E90FF] hover:bg-[#197FE6] text-white text-xs sm:text-sm font-semibold shadow-lg shadow-[#1E90FF]/20 transition-all whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E90FF]"
+                    className="min-h-[44px] inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#1673D6] hover:bg-[#1E90FF] text-white text-xs sm:text-sm font-semibold shadow-lg shadow-[#1E90FF]/20 transition-all whitespace-nowrap"
                   >
                     {justAdded ? (
                       <>
@@ -230,7 +240,8 @@ export function ProductModal({ product, selectedCountry, onClose, onAddToCart }:
                     })}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-[#050B14] border border-[#25D366]/50 text-[#25D366] hover:bg-[#25D366]/10 text-xs sm:text-sm font-semibold transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#25D366]"
+                    aria-label={`Order ${product.name} via WhatsApp (opens in a new tab)`}
+                    className="min-h-[44px] inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#050B14] border border-[#25D366]/55 text-[#25D366] hover:bg-[#25D366]/10 text-xs sm:text-sm font-semibold transition-colors whitespace-nowrap"
                   >
                     <WhatsAppIcon className="h-4 w-4 shrink-0" />
                     Order via WhatsApp
@@ -238,7 +249,7 @@ export function ProductModal({ product, selectedCountry, onClose, onAddToCart }:
                 </div>
               </div>
 
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-slate-300">
                 Prefer to talk first? Order through WhatsApp and we&apos;ll confirm everything with you.
               </p>
             </div>

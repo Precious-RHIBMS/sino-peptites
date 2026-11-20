@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { ArrowRight, Minus, Plus, ShoppingBag, Trash2, X } from 'lucide-react';
 import { CartItem } from '../types';
 import { buildCartWhatsAppUrl } from '../utils/whatsapp';
@@ -36,13 +36,22 @@ export function CartDrawer({
   onRemoveItem,
   onProceedToCheckout,
 }: CartDrawerProps) {
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
   useEffect(() => {
     if (!isOpen) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    closeButtonRef.current?.focus();
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
@@ -68,12 +77,13 @@ export function CartDrawer({
             <h2 className="font-serif text-xl font-bold text-white">Your Cart</h2>
           </div>
           <button
+            ref={closeButtonRef}
             type="button"
             onClick={onClose}
             aria-label="Close cart drawer"
-            className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E90FF]"
+            className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center p-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
           >
-            <X className="h-5 w-5" />
+            <X className="h-5 w-5" aria-hidden="true" />
           </button>
         </div>
 
@@ -151,22 +161,22 @@ export function CartDrawer({
                     <button
                       type="button"
                       onClick={() => onRemoveItem(item.variantId)}
-                      aria-label={`Remove ${item.name}`}
-                      className="p-1 text-slate-500 hover:text-rose-400 transition-colors shrink-0"
+                      aria-label={`Remove ${item.name} from cart`}
+                      className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center -mr-2 -mt-2 text-slate-400 hover:text-rose-400 transition-colors shrink-0 rounded-lg"
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Trash2 className="h-4 w-4" aria-hidden="true" />
                     </button>
                   </div>
 
-                  <div className="mt-3 flex items-center justify-between gap-2">
-                    <div className="inline-flex items-center bg-[#0A1220] border border-white/10 rounded-lg">
+                  <div className="mt-2 flex items-center justify-between gap-2">
+                    <div className="inline-flex items-center bg-[#0A1220] border border-white/15 rounded-lg">
                       <button
                         type="button"
                         onClick={() => onUpdateQuantity(item.variantId, -1)}
                         aria-label={`Decrease quantity of ${item.name}`}
-                        className="p-1.5 text-slate-300 hover:text-white transition-colors"
+                        className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center text-slate-200 hover:text-white transition-colors"
                       >
-                        <Minus className="h-3.5 w-3.5" />
+                        <Minus className="h-3.5 w-3.5" aria-hidden="true" />
                       </button>
                       <span className="w-7 text-center text-xs font-mono font-semibold text-white tabular-nums">
                         {item.quantity}
@@ -175,9 +185,9 @@ export function CartDrawer({
                         type="button"
                         onClick={() => onUpdateQuantity(item.variantId, 1)}
                         aria-label={`Increase quantity of ${item.name}`}
-                        className="p-1.5 text-slate-300 hover:text-white transition-colors"
+                        className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center text-slate-200 hover:text-white transition-colors"
                       >
-                        <Plus className="h-3.5 w-3.5" />
+                        <Plus className="h-3.5 w-3.5" aria-hidden="true" />
                       </button>
                     </div>
 
@@ -220,7 +230,7 @@ export function CartDrawer({
                 <button
                   type="button"
                   onClick={onProceedToCheckout}
-                  className="inline-flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-[#1E90FF] hover:bg-[#197FE6] text-white text-xs sm:text-sm font-semibold shadow-lg shadow-[#1E90FF]/20 transition-all whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E90FF]"
+                  className="min-h-[44px] inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#1673D6] hover:bg-[#1E90FF] text-white text-xs sm:text-sm font-semibold shadow-lg shadow-[#1E90FF]/20 transition-all whitespace-nowrap"
                 >
                   Checkout
                   <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
@@ -234,14 +244,15 @@ export function CartDrawer({
                   })}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-[#0A1220] border border-[#25D366]/50 text-[#25D366] hover:bg-[#25D366]/10 text-xs sm:text-sm font-semibold transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#25D366]"
+                  aria-label="Order cart via WhatsApp (opens in a new tab)"
+                  className="min-h-[44px] inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#0A1220] border border-[#25D366]/55 text-[#25D366] hover:bg-[#25D366]/10 text-xs sm:text-sm font-semibold transition-colors whitespace-nowrap"
                 >
                   <WhatsAppIcon className="h-4 w-4 shrink-0" />
                   Order via WhatsApp
                 </a>
               </div>
 
-              <p className="text-[11px] text-slate-400 leading-snug">
+              <p className="text-[11px] text-slate-300 leading-snug">
                 Prefer to talk first? Order through WhatsApp and we&apos;ll confirm everything with you.
               </p>
             </div>

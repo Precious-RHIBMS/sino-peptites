@@ -17,7 +17,7 @@ import { CATEGORIES, CERTIFICATES, PRODUCTS, STORE_CONFIG, TESTIMONIALS } from '
 import { CartItem, PolicyType, Product, ProductVariant } from './types';
 
 /**
- * Valence Botanicals Storefront Application
+ * sino_pepts Storefront Application
  * Runs fully client-side from local products.js catalog with in-memory cart state.
  */
 export default function App() {
@@ -31,6 +31,7 @@ export default function App() {
   const [isCheckoutView, setIsCheckoutView] = useState<boolean>(false);
   const [activePolicy, setActivePolicy] = useState<PolicyType>(null);
   const [selectedCountry, setSelectedCountry] = useState<string>('United States');
+  const [liveAnnouncement, setLiveAnnouncement] = useState<string>('');
 
   // Derived cart totals recalculated on every state update
   const cartCount = useMemo(
@@ -142,6 +143,7 @@ export default function App() {
         },
       ];
     });
+    setLiveAnnouncement(`Added ${quantity} ${product.name} (${variant.label}) to your cart.`);
   };
 
   const handleUpdateCartQuantity = (variantId: string, delta: number) => {
@@ -154,10 +156,12 @@ export default function App() {
         )
         .filter((item) => item.quantity > 0)
     );
+    setLiveAnnouncement('Cart quantity updated.');
   };
 
   const handleRemoveCartItem = (variantId: string) => {
     setCartItems((prev) => prev.filter((item) => item.variantId !== variantId));
+    setLiveAnnouncement('Item removed from cart.');
   };
 
   const handleProceedToCheckout = () => {
@@ -172,6 +176,17 @@ export default function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#050B14] text-slate-200">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:px-4 focus:py-2.5 focus:rounded-lg focus:bg-[#1673D6] focus:text-white focus:text-xs focus:font-semibold focus:shadow-xl"
+      >
+        Skip to main content
+      </a>
+
+      <div className="sr-only" aria-live="polite" aria-atomic="true">
+        {liveAnnouncement}
+      </div>
+
       {/* 1. Top Announcement Bar */}
       <AnnouncementBar
         shippingFee={STORE_CONFIG.shippingFee}
@@ -192,7 +207,7 @@ export default function App() {
       />
 
       {/* Main Content Area: Storefront or Checkout */}
-      <main className="flex-1">
+      <main id="main-content" tabIndex={-1} className="flex-1 focus:outline-none">
         {isCheckoutView ? (
           <CheckoutView
             items={cartItems}

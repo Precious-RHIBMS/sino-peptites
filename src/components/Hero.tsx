@@ -74,7 +74,7 @@ export function Hero({ productCount, onExploreStore, onViewCertificates }: HeroP
               <button
                 type="button"
                 onClick={onExploreStore}
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-[#1E90FF] hover:bg-[#197FE6] text-white text-sm font-semibold shadow-lg shadow-[#1E90FF]/20 transition-all hover:-translate-y-0.5 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E90FF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#050B14]"
+                className="min-h-[44px] inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-[#1673D6] hover:bg-[#1E90FF] text-white text-sm font-semibold shadow-lg shadow-[#1E90FF]/20 transition-all hover:-translate-y-0.5 whitespace-nowrap"
               >
                 Explore the Store
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -83,7 +83,7 @@ export function Hero({ productCount, onExploreStore, onViewCertificates }: HeroP
               <button
                 type="button"
                 onClick={onViewCertificates}
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-[#0A1220] hover:bg-[#101C30] text-slate-200 border border-white/10 text-sm font-semibold transition-all hover:-translate-y-0.5 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E90FF]"
+                className="min-h-[44px] inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-[#0A1220] hover:bg-[#101C30] text-slate-200 border border-white/15 text-sm font-semibold transition-all hover:-translate-y-0.5 whitespace-nowrap"
               >
                 Inspect Lab Certificates
               </button>

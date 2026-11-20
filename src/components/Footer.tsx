@@ -84,18 +84,18 @@ export function Footer({
             <a
               href="https://instagram.com"
               target="_blank"
-              rel="noreferrer"
-              aria-label="Instagram"
-              className="px-3 py-1.5 rounded-lg bg-[#0A1220] border border-white/10 text-xs text-slate-300 hover:text-white hover:border-[#1E90FF] transition-colors"
+              rel="noopener noreferrer"
+              aria-label="Instagram (opens in a new tab)"
+              className="min-h-[44px] inline-flex items-center px-3.5 py-2 rounded-lg bg-[#0A1220] border border-white/15 text-xs text-slate-200 hover:text-white hover:border-[#1E90FF] transition-colors"
             >
               Instagram
             </a>
             <a
               href="https://linkedin.com"
               target="_blank"
-              rel="noreferrer"
-              aria-label="LinkedIn"
-              className="px-3 py-1.5 rounded-lg bg-[#0A1220] border border-white/10 text-xs text-slate-300 hover:text-white hover:border-[#1E90FF] transition-colors"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn (opens in a new tab)"
+              className="min-h-[44px] inline-flex items-center px-3.5 py-2 rounded-lg bg-[#0A1220] border border-white/15 text-xs text-slate-200 hover:text-white hover:border-[#1E90FF] transition-colors"
             >
               LinkedIn
             </a>
@@ -106,7 +106,7 @@ export function Footer({
           <h3 className="text-xs font-semibold uppercase tracking-wider text-white mb-4">
             Navigation
           </h3>
-          <ul className="space-y-2.5 text-xs">
+          <ul className="space-y-1 text-xs">
             {[
               { label: 'Store Catalog', id: 'store' },
               { label: 'Shop by Category', id: 'categories' },
@@ -120,7 +120,7 @@ export function Footer({
                     e.preventDefault();
                     onNavigateSection(link.id);
                   }}
-                  className="text-slate-400 hover:text-[#1E90FF] transition-colors"
+                  className="min-h-[40px] inline-flex items-center text-slate-300 hover:text-[#1E90FF] transition-colors"
                 >
                   {link.label}
                 </a>
@@ -133,12 +133,12 @@ export function Footer({
           <h3 className="text-xs font-semibold uppercase tracking-wider text-white mb-4">
             Policies &amp; Compliance
           </h3>
-          <ul className="space-y-2.5 text-xs">
+          <ul className="space-y-1 text-xs">
             <li>
               <button
                 type="button"
                 onClick={() => onOpenPolicy('shipping')}
-                className="text-slate-400 hover:text-[#1E90FF] transition-colors"
+                className="min-h-[40px] inline-flex items-center text-slate-300 hover:text-[#1E90FF] transition-colors"
               >
                 Shipping &amp; Dispatch Policy
               </button>
@@ -147,7 +147,7 @@ export function Footer({
               <button
                 type="button"
                 onClick={() => onOpenPolicy('privacy')}
-                className="text-slate-400 hover:text-[#1E90FF] transition-colors"
+                className="min-h-[40px] inline-flex items-center text-slate-300 hover:text-[#1E90FF] transition-colors"
               >
                 Privacy Policy
               </button>
@@ -156,7 +156,7 @@ export function Footer({
               <button
                 type="button"
                 onClick={() => onOpenPolicy('terms')}
-                className="text-slate-400 hover:text-[#1E90FF] transition-colors"
+                className="min-h-[40px] inline-flex items-center text-slate-300 hover:text-[#1E90FF] transition-colors"
               >
                 Terms of Sale
               </button>
@@ -168,7 +168,7 @@ export function Footer({
           <h3 className="text-xs font-semibold uppercase tracking-wider text-white mb-4">
             Laboratory &amp; Contact
           </h3>
-          <ul className="space-y-3 text-xs text-slate-400">
+          <ul className="space-y-3 text-xs text-slate-300">
             <li className="flex items-start gap-2.5">
               <Mail className="h-4 w-4 text-[#1E90FF] shrink-0 mt-0.5" aria-hidden="true" />
               <a href={`mailto:${contact.email}`} className="hover:text-white transition-colors">
@@ -192,9 +192,9 @@ export function Footer({
       </div>
 
       <div className="border-t border-white/10 py-5 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-[1380px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
+        <div className="max-w-[1380px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400">
           <p>© {new Date().getFullYear()} {brandName}. All rights reserved.</p>
-          <p>Batch-traceable botanical formulations.</p>
+          <p>Batch-traceable peptide &amp; laboratory formulations.</p>
         </div>
       </div>
     </footer>

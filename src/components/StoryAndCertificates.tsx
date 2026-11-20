@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Award, CheckCircle2, FileText, Microscope, X } from 'lucide-react';
 import { Certificate } from '../types';
 
@@ -12,6 +12,23 @@ interface StoryAndCertificatesProps {
  */
 export function StoryAndCertificates({ certificates }: StoryAndCertificatesProps) {
   const [selectedCert, setSelectedCert] = useState<Certificate | null>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!selectedCert) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    closeButtonRef.current?.focus();
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setSelectedCert(null);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [selectedCert]);
 
   return (
     <section
@@ -141,16 +158,17 @@ export function StoryAndCertificates({ certificates }: StoryAndCertificatesProps
                 </h3>
               </div>
               <button
+                ref={closeButtonRef}
                 type="button"
                 onClick={() => setSelectedCert(null)}
                 aria-label="Close certificate"
-                className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+                className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center p-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
               >
-                <X className="h-5 w-5" />
+                <X className="h-5 w-5" aria-hidden="true" />
               </button>
             </div>
 
-            <div className="mt-4 flex flex-wrap items-center gap-3 text-xs text-slate-400">
+            <div className="mt-4 flex flex-wrap items-center gap-3 text-xs text-slate-300">
               <span>{selectedCert.standard}</span>
               <span aria-hidden="true">·</span>
               <span>Tested {selectedCert.testedDate}</span>
@@ -164,7 +182,7 @@ export function StoryAndCertificates({ certificates }: StoryAndCertificatesProps
                   key={metric.label}
                   className="flex items-center justify-between gap-4 text-xs border-b border-white/5 pb-2.5 last:border-b-0 last:pb-0"
                 >
-                  <span className="text-slate-400">{metric.label}</span>
+                  <span className="text-slate-300">{metric.label}</span>
                   <span className="font-mono font-semibold text-white tabular-nums">
                     {metric.value}
                   </span>
@@ -172,7 +190,7 @@ export function StoryAndCertificates({ certificates }: StoryAndCertificatesProps
               ))}
             </div>
 
-            <div className="mt-6 flex items-center justify-between">
+            <div className="mt-6 flex items-center justify-between gap-3">
               <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-400">
                 <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
                 {selectedCert.result}
@@ -180,7 +198,7 @@ export function StoryAndCertificates({ certificates }: StoryAndCertificatesProps
               <button
                 type="button"
                 onClick={() => setSelectedCert(null)}
-                className="px-4 py-2 rounded-lg bg-[#1E90FF] hover:bg-[#197FE6] text-white text-xs font-semibold transition-colors"
+                className="min-h-[44px] px-5 py-2.5 rounded-lg bg-[#1673D6] hover:bg-[#1E90FF] text-white text-xs font-semibold transition-colors"
               >
                 Close Report
               </button>

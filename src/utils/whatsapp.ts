@@ -25,7 +25,7 @@ export function buildSingleProductWhatsAppUrl(params: {
   const lineTotal = variant.price * quantity;
 
   const message = [
-    "Hello Valence Botanicals, I'd like to order:",
+    "Hello sino_pepts, I'd like to order:",
     `- ${product.name} (Lot #${lot}, ${variant.label}) x ${quantity} - $${lineTotal.toFixed(2)}`,
     `Total: $${lineTotal.toFixed(2)}`,
     `Country: ${country}`,
@@ -49,7 +49,7 @@ export function buildCartWhatsAppUrl(params: {
   });
 
   const message = [
-    "Hello Valence Botanicals, I'd like to order:",
+    "Hello sino_pepts, I'd like to order:",
     ...itemLines,
     `Total: $${total.toFixed(2)}`,
     `Country: ${country}`,

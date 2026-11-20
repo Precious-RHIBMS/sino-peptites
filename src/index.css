@@ -20,6 +20,22 @@
   h1, h2, h3, .font-display {
     font-family: var(--font-serif);
   }
+
+  /* Ensure anchored sections clear sticky header height */
+  section[id],
+  div[id] {
+    scroll-margin-top: 5rem;
+  }
+
+  /* High-contrast keyboard focus ring across all interactive controls */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid #1E90FF;
+    outline-offset: 2px;
+  }
 }
 
 /* Smooth reduced-motion safeguard */

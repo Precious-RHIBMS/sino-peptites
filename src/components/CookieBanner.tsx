@@ -7,7 +7,7 @@ interface CookieBannerProps {
 }
 
 /**
- * Compact dismissible cookie consent banner positioned away from the live chat launcher.
+ * Compact dismissible cookie consent banner positioned away from the floating WhatsApp launcher.
  */
 export function CookieBanner({ onOpenPrivacy }: CookieBannerProps) {
   const [visible, setVisible] = useState(true);
@@ -21,31 +21,31 @@ export function CookieBanner({ onOpenPrivacy }: CookieBannerProps) {
       className="fixed bottom-18 sm:bottom-4 left-4 right-4 sm:right-auto sm:max-w-md z-30 bg-[#0A1220] border border-white/15 rounded-xl p-4 shadow-2xl"
     >
       <div className="flex items-start gap-3">
-        <Cookie className="h-4 w-4 text-[#1E90FF] shrink-0 mt-0.5" aria-hidden="true" />
+        <Cookie className="h-4 w-4 text-[#1E90FF] shrink-0 mt-1" aria-hidden="true" />
         <div className="flex-1 min-w-0">
-          <p className="text-xs text-slate-300 leading-relaxed">
+          <p className="text-xs text-slate-200 leading-relaxed">
             We use essential session storage to maintain your cart and preferences. Read our{' '}
             <button
               type="button"
               onClick={() => onOpenPrivacy('privacy')}
-              className="text-[#1E90FF] hover:underline font-medium"
+              className="text-[#1E90FF] hover:underline font-medium inline-flex items-center py-1"
             >
               Privacy Policy
             </button>
             .
           </p>
-          <div className="mt-3 flex items-center gap-2">
+          <div className="mt-2.5 flex items-center gap-2.5">
             <button
               type="button"
               onClick={() => setVisible(false)}
-              className="px-3 py-1.5 rounded-lg bg-[#1E90FF] hover:bg-[#197FE6] text-white text-xs font-semibold transition-colors"
+              className="min-h-[44px] px-4 py-2 rounded-lg bg-[#1673D6] hover:bg-[#1E90FF] text-white text-xs font-semibold transition-colors"
             >
               Accept
             </button>
             <button
               type="button"
               onClick={() => setVisible(false)}
-              className="px-3 py-1.5 rounded-lg bg-[#050B14] border border-white/10 text-slate-300 hover:text-white text-xs font-medium transition-colors"
+              className="min-h-[44px] px-4 py-2 rounded-lg bg-[#050B14] border border-white/15 text-slate-200 hover:text-white text-xs font-medium transition-colors"
             >
               Dismiss
             </button>
@@ -55,9 +55,9 @@ export function CookieBanner({ onOpenPrivacy }: CookieBannerProps) {
           type="button"
           onClick={() => setVisible(false)}
           aria-label="Dismiss cookie notice"
-          className="p-1 text-slate-500 hover:text-white transition-colors"
+          className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center -mr-2 -mt-2 text-slate-300 hover:text-white transition-colors rounded-lg"
         >
-          <X className="h-4 w-4" />
+          <X className="h-4 w-4" aria-hidden="true" />
         </button>
       </div>
     </div>

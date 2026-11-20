@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { Menu, Search, ShoppingBag, X } from 'lucide-react';
 
 interface NavbarProps {
@@ -38,6 +38,15 @@ export function Navbar({
 }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMobileMenuOpen(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [mobileMenuOpen]);
+
   const handleFormSubmit = (e: FormEvent) => {
     e.preventDefault();
     onSearchSubmit();
@@ -59,7 +68,7 @@ export function Navbar({
             e.preventDefault();
             handleNavClick('home');
           }}
-          className="font-serif text-lg sm:text-xl font-bold tracking-tight text-[#050B14] whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E90FF] rounded"
+          className="font-serif text-lg sm:text-xl font-bold tracking-tight text-[#050B14] whitespace-nowrap shrink-0 min-h-[44px] inline-flex items-center rounded"
         >
           {brandName}
         </a>
@@ -77,7 +86,7 @@ export function Navbar({
                 e.preventDefault();
                 handleNavClick(item.id);
               }}
-              className="hover:text-[#1E90FF] transition-colors whitespace-nowrap shrink-0 py-1 border-b-2 border-transparent hover:border-[#1E90FF]"
+              className="hover:text-[#1673D6] transition-colors whitespace-nowrap shrink-0 py-2 border-b-2 border-transparent hover:border-[#1E90FF] rounded-t"
             >
               {item.label}
             </a>
@@ -85,13 +94,13 @@ export function Navbar({
         </nav>
 
         {/* Right Controls: Search + Cart Total + Mobile Menu Trigger */}
-        <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
-          <form onSubmit={handleFormSubmit} className="hidden md:flex items-center relative">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <form onSubmit={handleFormSubmit} role="search" className="hidden md:flex items-center relative">
             <label htmlFor="header-search" className="sr-only">
-              Search botanical formulations
+              Search products
             </label>
             <Search
-              className="h-4 w-4 text-slate-400 absolute left-3 pointer-events-none"
+              className="h-4 w-4 text-slate-500 absolute left-3 pointer-events-none"
               aria-hidden="true"
             />
             <input
@@ -100,20 +109,20 @@ export function Navbar({
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
               placeholder="Search products..."
-              className="w-40 xl:w-48 pl-9 pr-3 py-1.5 text-xs bg-slate-100 text-[#050B14] placeholder:text-slate-500 rounded-lg border border-slate-200 focus:outline-none focus:bg-white focus:border-[#1E90FF] transition-colors"
+              className="w-40 xl:w-48 min-h-[40px] pl-9 pr-3 py-1.5 text-sm md:text-xs bg-slate-100 text-[#050B14] placeholder:text-slate-600 rounded-lg border border-slate-300 focus:outline-none focus:bg-white focus:border-[#1E90FF] transition-colors"
             />
           </form>
 
           <button
             type="button"
             onClick={onOpenCart}
-            aria-label={`Open shopping cart with ${cartCount} items, total $${cartTotal.toFixed(2)}`}
-            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-[#050B14] text-white hover:bg-[#0E1B30] transition-colors text-xs font-semibold whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E90FF]"
+            aria-label={`Open shopping cart with ${cartCount} ${cartCount === 1 ? 'item' : 'items'}, subtotal $${cartTotal.toFixed(2)}`}
+            className="inline-flex items-center gap-2 min-h-[44px] px-3.5 py-2 rounded-lg bg-[#050B14] text-white hover:bg-[#0E1B30] transition-colors text-xs font-semibold whitespace-nowrap shrink-0"
           >
             <ShoppingBag className="h-4 w-4 text-[#1E90FF]" aria-hidden="true" />
             <span className="font-mono tabular-nums">${cartTotal.toFixed(2)}</span>
             {cartCount > 0 && (
-              <span className="px-1.5 py-0.5 rounded bg-[#1E90FF] text-white text-[11px] font-mono tabular-nums leading-none">
+              <span className="px-1.5 py-0.5 rounded bg-[#1673D6] text-white text-[11px] font-mono tabular-nums leading-none">
                 {cartCount}
               </span>
             )}
@@ -123,23 +132,27 @@ export function Navbar({
             type="button"
             onClick={() => setMobileMenuOpen((prev) => !prev)}
             aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-nav-menu"
             aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
-            className="lg:hidden inline-flex items-center justify-center p-2 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E90FF]"
+            className="lg:hidden inline-flex items-center justify-center min-h-[44px] min-w-[44px] p-2 rounded-lg border border-slate-300 text-slate-800 hover:bg-slate-100 transition-colors"
           >
-            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {mobileMenuOpen ? <X className="h-5 w-5" aria-hidden="true" /> : <Menu className="h-5 w-5" aria-hidden="true" />}
           </button>
         </div>
       </div>
 
       {/* Mobile Collapsible Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-white border-t border-slate-200 px-4 py-4 space-y-4 shadow-lg">
-          <form onSubmit={handleFormSubmit} className="relative">
+        <div
+          id="mobile-nav-menu"
+          className="lg:hidden bg-white border-t border-slate-200 px-4 py-4 space-y-4 shadow-lg"
+        >
+          <form onSubmit={handleFormSubmit} role="search" className="relative">
             <label htmlFor="mobile-search" className="sr-only">
               Search formulations
             </label>
             <Search
-              className="h-4 w-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
+              className="h-4 w-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
               aria-hidden="true"
             />
             <input
@@ -147,8 +160,8 @@ export function Navbar({
               type="search"
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
-              placeholder="Search products, ingredients, SKUs..."
-              className="w-full pl-9 pr-3 py-2.5 text-sm bg-slate-100 text-[#050B14] placeholder:text-slate-500 rounded-lg border border-slate-200 focus:outline-none focus:bg-white focus:border-[#1E90FF]"
+              placeholder="Search products, SKUs..."
+              className="w-full min-h-[44px] pl-9 pr-3 py-2.5 text-base sm:text-sm bg-slate-100 text-[#050B14] placeholder:text-slate-600 rounded-lg border border-slate-300 focus:outline-none focus:bg-white focus:border-[#1E90FF]"
             />
           </form>
 
@@ -161,7 +174,7 @@ export function Navbar({
                   e.preventDefault();
                   handleNavClick(item.id);
                 }}
-                className="px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-[#1E90FF] transition-colors"
+                className="min-h-[44px] flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-slate-800 hover:bg-slate-100 hover:text-[#1673D6] transition-colors"
               >
                 {item.label}
               </a>

@@ -34,11 +34,12 @@ export function CategoryGrid({
 
           <button
             type="button"
+            aria-pressed={activeCategory === 'all'}
             onClick={() => onSelectCategory('all')}
-            className={`self-start sm:self-auto px-4 py-2 rounded-lg text-xs font-semibold transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E90FF] ${
+            className={`self-start sm:self-auto min-h-[44px] px-4 py-2 rounded-lg text-xs font-semibold transition-colors whitespace-nowrap ${
               activeCategory === 'all'
-                ? 'bg-[#1E90FF] text-white'
-                : 'bg-[#0A1220] text-slate-300 border border-white/10 hover:border-[#1E90FF]/50 hover:text-white'
+                ? 'bg-[#1673D6] text-white'
+                : 'bg-[#0A1220] text-slate-200 border border-white/10 hover:border-[#1E90FF]/50 hover:text-white'
             }`}
           >
             View All Formulations
@@ -53,8 +54,9 @@ export function CategoryGrid({
               <button
                 key={category.id}
                 type="button"
+                aria-pressed={isSelected}
                 onClick={() => onSelectCategory(category.id)}
-                className={`group text-left bg-[#0A1220] rounded-xl overflow-hidden border transition-all duration-200 hover:-translate-y-0.5 shadow-md shadow-black/25 flex flex-col focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E90FF] ${
+                className={`group text-left bg-[#0A1220] rounded-xl overflow-hidden border transition-all duration-200 hover:-translate-y-0.5 shadow-md shadow-black/25 flex flex-col ${
                   isSelected
                     ? 'border-[#1E90FF] ring-1 ring-[#1E90FF]/40'
                     : 'border-white/10 hover:border-white/25'
@@ -75,15 +77,15 @@ export function CategoryGrid({
                         {category.name}
                       </h3>
                       <ArrowUpRight
-                        className="h-3.5 w-3.5 text-slate-500 group-hover:text-[#1E90FF] shrink-0 transition-colors"
+                        className="h-3.5 w-3.5 text-slate-400 group-hover:text-[#1E90FF] shrink-0 transition-colors"
                         aria-hidden="true"
                       />
                     </div>
-                    <p className="mt-1.5 text-xs text-slate-400 line-clamp-2 leading-relaxed">
+                    <p className="mt-1.5 text-xs text-slate-300 line-clamp-2 leading-relaxed">
                       {category.description}
                     </p>
                   </div>
-                  <span className="mt-3 text-[11px] font-mono text-slate-500 tabular-nums">
+                  <span className="mt-3 text-[11px] font-mono text-slate-400 tabular-nums">
                     {category.count} {category.count === 1 ? 'product' : 'products'}
                   </span>
                 </div>

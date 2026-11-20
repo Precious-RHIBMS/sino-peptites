@@ -6,13 +6,13 @@
 export const WHATSAPP_NUMBER = '237XXXXXXXXX';
 
 export const STORE_CONFIG = {
-  brandName: 'Valence Botanicals',
+  brandName: 'sino_pepts',
   tagline: 'HPLC-Verified Research Peptides & Analytical Lab Solutions',
   shippingFee: 12.0,
   freeShippingThreshold: 150.0,
   currency: 'USD',
   contact: {
-    email: 'care@valencebotanicals.com',
+    email: 'care@sinopepts.com',
     phone: '+1 (503) 555-0194',
     address: '418 NW Flanders St, Suite 300, Portland, OR 97209',
     hours: 'Mon–Fri · 08:00–18:00 PST',
@@ -441,7 +441,7 @@ export const TESTIMONIALS = [
     productPurchased: 'RETATRUTIDE · 5 × 10mg Kit',
     rating: 5,
     quote:
-      'Previously we lost two weeks per order re-running external LC-MS checks when suppliers shipped unverified lots. Switching to Valence cut our intake verification time to under 24 hours because every vial arrived with matching HPLC chromatograms.',
+      'Previously we lost two weeks per order re-running external LC-MS checks when suppliers shipped unverified lots. Switching to sino_pepts cut our intake verification time to under 24 hours because every vial arrived with matching HPLC chromatograms.',
     verifiedDate: 'October 2026',
   },
   {
@@ -463,7 +463,7 @@ export const TESTIMONIALS = [
     productPurchased: 'NAD+ 500mg & MOTS-C 10mg',
     rating: 5,
     quote:
-      'Our NAD+ and MOTS-C cellular assays showed noticeable run-to-run drift with prior vendors. Since standardizing on Valence batches with documented Karl Fischer moisture and purity assays, our baseline assay reproducibility improved immediately.',
+      'Our NAD+ and MOTS-C cellular assays showed noticeable run-to-run drift with prior vendors. Since standardizing on sino_pepts batches with documented Karl Fischer moisture and purity assays, our baseline assay reproducibility improved immediately.',
     verifiedDate: 'October 2026',
   },
   {

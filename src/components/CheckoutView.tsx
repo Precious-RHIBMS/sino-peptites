@@ -108,7 +108,7 @@ export function CheckoutView({
 
   if (confirmation) {
     return (
-      <section className="py-12 lg:py-20 bg-[#050B14] min-h-[70vh]">
+      <section className="py-12 lg:py-20 bg-[#050B14] min-h-[70vh]" role="status" aria-live="polite">
         <div className="max-w-2xl mx-auto px-4 sm:px-6">
           <div className="bg-[#0A1220] border border-white/15 rounded-2xl p-6 sm:p-8 shadow-2xl">
             <div className="flex items-center gap-3 text-emerald-400">
@@ -171,7 +171,7 @@ export function CheckoutView({
             <button
               type="button"
               onClick={onBackToStore}
-              className="mt-7 w-full py-3.5 px-5 rounded-xl bg-[#1E90FF] hover:bg-[#197FE6] text-white text-sm font-semibold transition-colors"
+              className="mt-7 w-full min-h-[44px] py-3.5 px-5 rounded-xl bg-[#1673D6] hover:bg-[#1E90FF] text-white text-sm font-semibold transition-colors"
             >
               Return to Storefront
             </button>
@@ -187,7 +187,7 @@ export function CheckoutView({
         <button
           type="button"
           onClick={onBackToStore}
-          className="inline-flex items-center gap-2 text-xs font-semibold text-slate-300 hover:text-[#1E90FF] transition-colors mb-6"
+          className="min-h-[44px] inline-flex items-center gap-2 text-xs font-semibold text-slate-200 hover:text-[#1E90FF] transition-colors mb-4"
         >
           <ArrowLeft className="h-4 w-4" aria-hidden="true" />
           Back to Storefront
@@ -211,7 +211,7 @@ export function CheckoutView({
             <button
               type="button"
               onClick={onBackToStore}
-              className="mt-5 px-5 py-2.5 rounded-lg bg-[#1E90FF] hover:bg-[#197FE6] text-white text-xs font-semibold transition-colors"
+              className="mt-5 min-h-[44px] px-5 py-2.5 rounded-lg bg-[#1673D6] hover:bg-[#1E90FF] text-white text-xs sm:text-sm font-semibold transition-colors"
             >
               Return to Store
             </button>
@@ -226,104 +226,123 @@ export function CheckoutView({
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="sm:col-span-2">
-                    <label htmlFor="chk-name" className="block text-xs font-medium text-slate-300 mb-1.5">
+                    <label htmlFor="chk-name" className="block text-xs font-medium text-slate-200 mb-1.5">
                       Full Name *
                     </label>
                     <input
                       id="chk-name"
                       type="text"
                       required
+                      autoComplete="name"
+                      aria-invalid={Boolean(errorMessage && !fullName.trim())}
+                      aria-describedby={errorMessage ? 'checkout-error' : undefined}
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
                       placeholder="Dr. Clara Bennett"
-                      className="w-full px-3.5 py-2.5 text-sm bg-[#050B14] text-white placeholder:text-slate-500 rounded-lg border border-white/15 focus:outline-none focus:border-[#1E90FF]"
+                      className="w-full min-h-[44px] px-3.5 py-2.5 text-base sm:text-sm bg-[#050B14] text-white placeholder:text-slate-400 rounded-lg border border-white/15 focus:outline-none focus:border-[#1E90FF]"
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="chk-email" className="block text-xs font-medium text-slate-300 mb-1.5">
+                    <label htmlFor="chk-email" className="block text-xs font-medium text-slate-200 mb-1.5">
                       Email Address *
                     </label>
                     <input
                       id="chk-email"
                       type="email"
                       required
+                      autoComplete="email"
+                      aria-invalid={Boolean(errorMessage && !email.trim())}
+                      aria-describedby={errorMessage ? 'checkout-error' : undefined}
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="clara@clinic.org"
-                      className="w-full px-3.5 py-2.5 text-sm bg-[#050B14] text-white placeholder:text-slate-500 rounded-lg border border-white/15 focus:outline-none focus:border-[#1E90FF]"
+                      className="w-full min-h-[44px] px-3.5 py-2.5 text-base sm:text-sm bg-[#050B14] text-white placeholder:text-slate-400 rounded-lg border border-white/15 focus:outline-none focus:border-[#1E90FF]"
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="chk-phone" className="block text-xs font-medium text-slate-300 mb-1.5">
+                    <label htmlFor="chk-phone" className="block text-xs font-medium text-slate-200 mb-1.5">
                       Phone Number *
                     </label>
                     <input
                       id="chk-phone"
                       type="tel"
                       required
+                      autoComplete="tel"
+                      aria-invalid={Boolean(errorMessage && !phone.trim())}
+                      aria-describedby={errorMessage ? 'checkout-error' : undefined}
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="+1 (503) 555-0148"
-                      className="w-full px-3.5 py-2.5 text-sm bg-[#050B14] text-white placeholder:text-slate-500 rounded-lg border border-white/15 focus:outline-none focus:border-[#1E90FF]"
+                      className="w-full min-h-[44px] px-3.5 py-2.5 text-base sm:text-sm bg-[#050B14] text-white placeholder:text-slate-400 rounded-lg border border-white/15 focus:outline-none focus:border-[#1E90FF]"
                     />
                   </div>
 
                   <div className="sm:col-span-2">
-                    <label htmlFor="chk-street" className="block text-xs font-medium text-slate-300 mb-1.5">
+                    <label htmlFor="chk-street" className="block text-xs font-medium text-slate-200 mb-1.5">
                       Street Address *
                     </label>
                     <input
                       id="chk-street"
                       type="text"
                       required
+                      autoComplete="street-address"
+                      aria-invalid={Boolean(errorMessage && !street.trim())}
+                      aria-describedby={errorMessage ? 'checkout-error' : undefined}
                       value={street}
                       onChange={(e) => setStreet(e.target.value)}
                       placeholder="742 Evergreen Terrace, Apt 4B"
-                      className="w-full px-3.5 py-2.5 text-sm bg-[#050B14] text-white placeholder:text-slate-500 rounded-lg border border-white/15 focus:outline-none focus:border-[#1E90FF]"
+                      className="w-full min-h-[44px] px-3.5 py-2.5 text-base sm:text-sm bg-[#050B14] text-white placeholder:text-slate-400 rounded-lg border border-white/15 focus:outline-none focus:border-[#1E90FF]"
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="chk-city" className="block text-xs font-medium text-slate-300 mb-1.5">
+                    <label htmlFor="chk-city" className="block text-xs font-medium text-slate-200 mb-1.5">
                       City *
                     </label>
                     <input
                       id="chk-city"
                       type="text"
                       required
+                      autoComplete="address-level2"
+                      aria-invalid={Boolean(errorMessage && !city.trim())}
+                      aria-describedby={errorMessage ? 'checkout-error' : undefined}
                       value={city}
                       onChange={(e) => setCity(e.target.value)}
                       placeholder="Portland"
-                      className="w-full px-3.5 py-2.5 text-sm bg-[#050B14] text-white placeholder:text-slate-500 rounded-lg border border-white/15 focus:outline-none focus:border-[#1E90FF]"
+                      className="w-full min-h-[44px] px-3.5 py-2.5 text-base sm:text-sm bg-[#050B14] text-white placeholder:text-slate-400 rounded-lg border border-white/15 focus:outline-none focus:border-[#1E90FF]"
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="chk-postal" className="block text-xs font-medium text-slate-300 mb-1.5">
+                    <label htmlFor="chk-postal" className="block text-xs font-medium text-slate-200 mb-1.5">
                       Postal Code *
                     </label>
                     <input
                       id="chk-postal"
                       type="text"
                       required
+                      autoComplete="postal-code"
+                      aria-invalid={Boolean(errorMessage && !postalCode.trim())}
+                      aria-describedby={errorMessage ? 'checkout-error' : undefined}
                       value={postalCode}
                       onChange={(e) => setPostalCode(e.target.value)}
                       placeholder="97209"
-                      className="w-full px-3.5 py-2.5 text-sm bg-[#050B14] text-white placeholder:text-slate-500 rounded-lg border border-white/15 focus:outline-none focus:border-[#1E90FF]"
+                      className="w-full min-h-[44px] px-3.5 py-2.5 text-base sm:text-sm bg-[#050B14] text-white placeholder:text-slate-400 rounded-lg border border-white/15 focus:outline-none focus:border-[#1E90FF]"
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="chk-country" className="block text-xs font-medium text-slate-300 mb-1.5">
+                    <label htmlFor="chk-country" className="block text-xs font-medium text-slate-200 mb-1.5">
                       Country
                     </label>
                     <select
                       id="chk-country"
+                      autoComplete="country-name"
                       value={country}
                       onChange={(e) => setCountry(e.target.value)}
-                      className="w-full px-3.5 py-2.5 text-sm bg-[#050B14] text-white rounded-lg border border-white/15 focus:outline-none focus:border-[#1E90FF]"
+                      className="w-full min-h-[44px] px-3.5 py-2.5 text-base sm:text-sm bg-[#050B14] text-white rounded-lg border border-white/15 focus:outline-none focus:border-[#1E90FF]"
                     >
                       <option value="United States">United States</option>
                       <option value="Cameroon">Cameroon</option>
@@ -339,7 +358,7 @@ export function CheckoutView({
                   </div>
 
                   <div>
-                    <label htmlFor="chk-notes" className="block text-xs font-medium text-slate-300 mb-1.5">
+                    <label htmlFor="chk-notes" className="block text-xs font-medium text-slate-200 mb-1.5">
                       Delivery Notes (Optional)
                     </label>
                     <input
@@ -348,7 +367,7 @@ export function CheckoutView({
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
                       placeholder="Gate code or lab reception"
-                      className="w-full px-3.5 py-2.5 text-sm bg-[#050B14] text-white placeholder:text-slate-500 rounded-lg border border-white/15 focus:outline-none focus:border-[#1E90FF]"
+                      className="w-full min-h-[44px] px-3.5 py-2.5 text-base sm:text-sm bg-[#050B14] text-white placeholder:text-slate-400 rounded-lg border border-white/15 focus:outline-none focus:border-[#1E90FF]"
                     />
                   </div>
                 </div>
@@ -358,52 +377,55 @@ export function CheckoutView({
               <div className="bg-[#0A1220] border border-white/10 rounded-2xl p-6 space-y-5">
                 <h2 className="font-serif text-xl font-bold text-white">2. Payment Method</h2>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3" role="group" aria-label="Payment method">
                   <button
                     type="button"
+                    aria-pressed={paymentMethod === 'card'}
                     onClick={() => setPaymentMethod('card')}
-                    className={`p-3.5 rounded-xl border text-left transition-all flex items-center gap-3 ${
+                    className={`min-h-[56px] p-3.5 rounded-xl border text-left transition-all flex items-center gap-3 ${
                       paymentMethod === 'card'
                         ? 'bg-[#1E90FF]/15 border-[#1E90FF] text-white'
-                        : 'bg-[#050B14] border-white/10 text-slate-300 hover:border-white/30'
+                        : 'bg-[#050B14] border-white/10 text-slate-200 hover:border-white/30'
                     }`}
                   >
                     <CreditCard className="h-5 w-5 text-[#1E90FF] shrink-0" aria-hidden="true" />
                     <div>
                       <span className="block text-xs font-semibold">Card</span>
-                      <span className="block text-[11px] text-slate-400">Visa / Mastercard</span>
+                      <span className="block text-[11px] text-slate-300">Visa / Mastercard</span>
                     </div>
                   </button>
 
                   <button
                     type="button"
+                    aria-pressed={paymentMethod === 'bank-transfer'}
                     onClick={() => setPaymentMethod('bank-transfer')}
-                    className={`p-3.5 rounded-xl border text-left transition-all flex items-center gap-3 ${
+                    className={`min-h-[56px] p-3.5 rounded-xl border text-left transition-all flex items-center gap-3 ${
                       paymentMethod === 'bank-transfer'
                         ? 'bg-[#1E90FF]/15 border-[#1E90FF] text-white'
-                        : 'bg-[#050B14] border-white/10 text-slate-300 hover:border-white/30'
+                        : 'bg-[#050B14] border-white/10 text-slate-200 hover:border-white/30'
                     }`}
                   >
                     <Building2 className="h-5 w-5 text-[#1E90FF] shrink-0" aria-hidden="true" />
                     <div>
                       <span className="block text-xs font-semibold">Bank Transfer</span>
-                      <span className="block text-[11px] text-slate-400">ACH / Wire / SEPA</span>
+                      <span className="block text-[11px] text-slate-300">ACH / Wire / SEPA</span>
                     </div>
                   </button>
 
                   <button
                     type="button"
+                    aria-pressed={paymentMethod === 'mobile-money'}
                     onClick={() => setPaymentMethod('mobile-money')}
-                    className={`p-3.5 rounded-xl border text-left transition-all flex items-center gap-3 ${
+                    className={`min-h-[56px] p-3.5 rounded-xl border text-left transition-all flex items-center gap-3 ${
                       paymentMethod === 'mobile-money'
                         ? 'bg-[#1E90FF]/15 border-[#1E90FF] text-white'
-                        : 'bg-[#050B14] border-white/10 text-slate-300 hover:border-white/30'
+                        : 'bg-[#050B14] border-white/10 text-slate-200 hover:border-white/30'
                     }`}
                   >
                     <Smartphone className="h-5 w-5 text-[#1E90FF] shrink-0" aria-hidden="true" />
                     <div>
                       <span className="block text-xs font-semibold">Mobile Money</span>
-                      <span className="block text-[11px] text-slate-400">M-Pesa / MTN / Airtel</span>
+                      <span className="block text-[11px] text-slate-300">M-Pesa / MTN / Airtel</span>
                     </div>
                   </button>
                 </div>
@@ -412,44 +434,53 @@ export function CheckoutView({
                 {paymentMethod === 'card' && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                     <div className="sm:col-span-2">
-                      <label htmlFor="card-num" className="block text-xs font-medium text-slate-300 mb-1.5">
+                      <label htmlFor="card-num" className="block text-xs font-medium text-slate-200 mb-1.5">
                         Card Number *
                       </label>
                       <input
                         id="card-num"
                         type="text"
                         inputMode="numeric"
+                        autoComplete="cc-number"
+                        aria-invalid={Boolean(errorMessage && paymentMethod === 'card' && cardNumber.replace(/\s+/g, '').length < 12)}
+                        aria-describedby={errorMessage ? 'checkout-error' : undefined}
                         value={cardNumber}
                         onChange={(e) => setCardNumber(e.target.value)}
                         placeholder="4242 4242 4242 4242"
-                        className="w-full px-3.5 py-2.5 text-sm font-mono bg-[#050B14] text-white placeholder:text-slate-500 rounded-lg border border-white/15 focus:outline-none focus:border-[#1E90FF]"
+                        className="w-full min-h-[44px] px-3.5 py-2.5 text-base sm:text-sm font-mono bg-[#050B14] text-white placeholder:text-slate-400 rounded-lg border border-white/15 focus:outline-none focus:border-[#1E90FF]"
                       />
                     </div>
                     <div>
-                      <label htmlFor="card-exp" className="block text-xs font-medium text-slate-300 mb-1.5">
+                      <label htmlFor="card-exp" className="block text-xs font-medium text-slate-200 mb-1.5">
                         Expiry (MM/YY) *
                       </label>
                       <input
                         id="card-exp"
                         type="text"
+                        autoComplete="cc-exp"
+                        aria-invalid={Boolean(errorMessage && paymentMethod === 'card' && !cardExpiry.trim())}
+                        aria-describedby={errorMessage ? 'checkout-error' : undefined}
                         value={cardExpiry}
                         onChange={(e) => setCardExpiry(e.target.value)}
                         placeholder="08/29"
-                        className="w-full px-3.5 py-2.5 text-sm font-mono bg-[#050B14] text-white placeholder:text-slate-500 rounded-lg border border-white/15 focus:outline-none focus:border-[#1E90FF]"
+                        className="w-full min-h-[44px] px-3.5 py-2.5 text-base sm:text-sm font-mono bg-[#050B14] text-white placeholder:text-slate-400 rounded-lg border border-white/15 focus:outline-none focus:border-[#1E90FF]"
                       />
                     </div>
                     <div>
-                      <label htmlFor="card-cvc" className="block text-xs font-medium text-slate-300 mb-1.5">
+                      <label htmlFor="card-cvc" className="block text-xs font-medium text-slate-200 mb-1.5">
                         Security Code (CVC) *
                       </label>
                       <input
                         id="card-cvc"
                         type="text"
                         inputMode="numeric"
+                        autoComplete="cc-csc"
+                        aria-invalid={Boolean(errorMessage && paymentMethod === 'card' && !cardCvc.trim())}
+                        aria-describedby={errorMessage ? 'checkout-error' : undefined}
                         value={cardCvc}
                         onChange={(e) => setCardCvc(e.target.value)}
                         placeholder="412"
-                        className="w-full px-3.5 py-2.5 text-sm font-mono bg-[#050B14] text-white placeholder:text-slate-500 rounded-lg border border-white/15 focus:outline-none focus:border-[#1E90FF]"
+                        className="w-full min-h-[44px] px-3.5 py-2.5 text-base sm:text-sm font-mono bg-[#050B14] text-white placeholder:text-slate-400 rounded-lg border border-white/15 focus:outline-none focus:border-[#1E90FF]"
                       />
                     </div>
                   </div>
@@ -461,27 +492,30 @@ export function CheckoutView({
                       Send your wire or ACH transfer using the settlement details below. Orders
                       are reserved for 48 hours and dispatched upon clearing.
                     </p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 font-mono text-slate-200 pt-1">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 font-mono text-slate-200 pt-1">
                       <div>
-                        <span className="text-slate-500 block font-sans">Beneficiary</span>
-                        Valence Botanicals LLC
+                        <span className="text-slate-400 block font-sans">Beneficiary</span>
+                        sino_pepts LLC
                       </div>
                       <div>
-                        <span className="text-slate-500 block font-sans">Routing / SWIFT</span>
+                        <span className="text-slate-400 block font-sans">Routing / SWIFT</span>
                         121000358 · VBOTUS33
                       </div>
                       <div>
-                        <span className="text-slate-500 block font-sans">Account Number</span>
+                        <span className="text-slate-400 block font-sans">Account Number</span>
                         8840-2910-4418
                       </div>
                       <div>
-                        <span className="text-slate-500 block font-sans">Transfer Reference (Optional)</span>
+                        <label htmlFor="bank-ref" className="text-slate-300 block font-sans mb-1">
+                          Transfer Reference (Optional)
+                        </label>
                         <input
+                          id="bank-ref"
                           type="text"
                           value={bankReference}
                           onChange={(e) => setBankReference(e.target.value)}
                           placeholder="Your transfer ID"
-                          className="mt-1 w-full px-2.5 py-1.5 text-xs bg-[#0A1220] text-white rounded border border-white/15 focus:outline-none focus:border-[#1E90FF]"
+                          className="w-full min-h-[44px] px-3 py-2 text-base sm:text-xs bg-[#0A1220] text-white placeholder:text-slate-400 rounded-lg border border-white/15 focus:outline-none focus:border-[#1E90FF]"
                         />
                       </div>
                     </div>
@@ -491,14 +525,14 @@ export function CheckoutView({
                 {paymentMethod === 'mobile-money' && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                     <div>
-                      <label htmlFor="mm-provider" className="block text-xs font-medium text-slate-300 mb-1.5">
+                      <label htmlFor="mm-provider" className="block text-xs font-medium text-slate-200 mb-1.5">
                         Mobile Wallet Network
                       </label>
                       <select
                         id="mm-provider"
                         value={mobileProvider}
                         onChange={(e) => setMobileProvider(e.target.value)}
-                        className="w-full px-3.5 py-2.5 text-sm bg-[#050B14] text-white rounded-lg border border-white/15 focus:outline-none focus:border-[#1E90FF]"
+                        className="w-full min-h-[44px] px-3.5 py-2.5 text-base sm:text-sm bg-[#050B14] text-white rounded-lg border border-white/15 focus:outline-none focus:border-[#1E90FF]"
                       >
                         <option value="M-Pesa / MTN Mobile Money">M-Pesa</option>
                         <option value="MTN MoMo">MTN MoMo</option>
@@ -507,16 +541,19 @@ export function CheckoutView({
                       </select>
                     </div>
                     <div>
-                      <label htmlFor="mm-number" className="block text-xs font-medium text-slate-300 mb-1.5">
+                      <label htmlFor="mm-number" className="block text-xs font-medium text-slate-200 mb-1.5">
                         Registered Wallet Phone *
                       </label>
                       <input
                         id="mm-number"
                         type="tel"
+                        autoComplete="tel"
+                        aria-invalid={Boolean(errorMessage && paymentMethod === 'mobile-money' && !mobileNumber.trim())}
+                        aria-describedby={errorMessage ? 'checkout-error' : undefined}
                         value={mobileNumber}
                         onChange={(e) => setMobileNumber(e.target.value)}
                         placeholder="+254 712 345 678"
-                        className="w-full px-3.5 py-2.5 text-sm font-mono bg-[#050B14] text-white placeholder:text-slate-500 rounded-lg border border-white/15 focus:outline-none focus:border-[#1E90FF]"
+                        className="w-full min-h-[44px] px-3.5 py-2.5 text-base sm:text-sm font-mono bg-[#050B14] text-white placeholder:text-slate-400 rounded-lg border border-white/15 focus:outline-none focus:border-[#1E90FF]"
                       />
                     </div>
                   </div>
@@ -524,8 +561,9 @@ export function CheckoutView({
 
                 {errorMessage && (
                   <div
+                    id="checkout-error"
                     role="alert"
-                    className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-300 font-medium"
+                    className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs sm:text-sm text-rose-200 font-medium"
                   >
                     {errorMessage}
                   </div>
@@ -594,7 +632,7 @@ export function CheckoutView({
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   <button
                     type="submit"
-                    className="inline-flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-[#1E90FF] hover:bg-[#197FE6] text-white text-xs sm:text-sm font-semibold shadow-lg shadow-[#1E90FF]/20 transition-all whitespace-nowrap"
+                    className="min-h-[44px] inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#1673D6] hover:bg-[#1E90FF] text-white text-xs sm:text-sm font-semibold shadow-lg shadow-[#1E90FF]/20 transition-all whitespace-nowrap"
                   >
                     <Lock className="h-4 w-4 shrink-0" aria-hidden="true" />
                     Place Order · <span className="font-mono tabular-nums">${total.toFixed(2)}</span>
@@ -608,14 +646,15 @@ export function CheckoutView({
                     })}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-[#050B14] border border-[#25D366]/50 text-[#25D366] hover:bg-[#25D366]/10 text-xs sm:text-sm font-semibold transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#25D366]"
+                    aria-label="Order cart via WhatsApp (opens in a new tab)"
+                    className="min-h-[44px] inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#050B14] border border-[#25D366]/55 text-[#25D366] hover:bg-[#25D366]/10 text-xs sm:text-sm font-semibold transition-colors whitespace-nowrap"
                   >
                     <WhatsAppIcon className="h-4 w-4 shrink-0" />
                     Order via WhatsApp
                   </a>
                 </div>
 
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-slate-300">
                   Prefer to talk first? Order through WhatsApp and we&apos;ll confirm everything with you.
                 </p>
               </div>

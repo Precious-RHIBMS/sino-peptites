@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 import { PolicyType } from '../types';
 
@@ -20,13 +20,22 @@ export function PolicyModal({
   contactEmail,
   onClose,
 }: PolicyModalProps) {
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
   useEffect(() => {
     if (!policy) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    closeButtonRef.current?.focus();
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   }, [policy, onClose]);
 
   if (!policy) return null;
@@ -78,7 +87,7 @@ export function PolicyModal({
       sections: [
         {
           heading: 'Analytical Guarantee',
-          body: 'Every product lot sold on Valence Botanicals is warranted to match the active assay and purity ranges published on its accompanying Certificate of Analysis.',
+          body: 'Every product lot sold on sino_pepts is warranted to match the active assay and purity ranges published on its accompanying Certificate of Analysis.',
         },
         {
           heading: '30-Day Unopened Return Window',
@@ -109,12 +118,13 @@ export function PolicyModal({
             </h2>
           </div>
           <button
+            ref={closeButtonRef}
             type="button"
             onClick={onClose}
             aria-label="Close policy dialog"
-            className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+            className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center p-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
           >
-            <X className="h-5 w-5" />
+            <X className="h-5 w-5" aria-hidden="true" />
           </button>
         </div>
 
@@ -122,7 +132,7 @@ export function PolicyModal({
           {active.sections.map((section) => (
             <div key={section.heading} className="border-t border-white/10 pt-3.5">
               <h3 className="text-sm font-semibold text-white">{section.heading}</h3>
-              <p className="mt-1 text-xs sm:text-sm text-slate-400 leading-relaxed">
+              <p className="mt-1 text-xs sm:text-sm text-slate-300 leading-relaxed">
                 {section.body}
               </p>
             </div>
@@ -133,7 +143,7 @@ export function PolicyModal({
           <button
             type="button"
             onClick={onClose}
-            className="px-5 py-2.5 rounded-lg bg-[#1E90FF] hover:bg-[#197FE6] text-white text-xs font-semibold transition-colors"
+            className="min-h-[44px] px-5 py-2.5 rounded-lg bg-[#1673D6] hover:bg-[#1E90FF] text-white text-xs font-semibold transition-colors"
           >
             Close
           </button>
