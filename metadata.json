@@ -1,0 +1,6 @@
+{
+  "name": "Valence Botanicals",
+  "description": "Certified clinical botanical extracts, cold-pressed essential oils, and barrier skincare backed by independent batch Certificates of Analysis.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
