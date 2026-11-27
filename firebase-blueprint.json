@@ -1,0 +1,251 @@
+{
+  "entities": {
+    "CustomerProfile": {
+      "title": "CustomerProfile",
+      "description": "Private customer account profile isolating user PII to the account owner and verified administrator.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Firebase Auth UID matching the document ID."
+        },
+        "displayName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "description": "Customer display name."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "minLength": 3,
+          "maxLength": 254,
+          "description": "Account email address."
+        },
+        "phone": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 30,
+          "description": "Optional contact phone number."
+        },
+        "preferredCountry": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 80,
+          "description": "Preferred country selection."
+        },
+        "emailVerified": {
+          "type": "boolean",
+          "description": "Synchronized Firebase Auth email verification status."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server-assigned profile creation timestamp."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server-assigned profile update timestamp."
+        }
+      },
+      "required": [
+        "uid",
+        "displayName",
+        "email",
+        "preferredCountry",
+        "emailVerified",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "UserPreferences": {
+      "title": "UserPreferences",
+      "description": "Authenticated user storefront interface and communication preferences.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Owner Firebase Auth UID."
+        },
+        "preferredCountry": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 80,
+          "description": "Default country selection for storefront preferences."
+        },
+        "emailNotifications": {
+          "type": "boolean",
+          "description": "Opt-in for account and support email updates."
+        },
+        "whatsappUpdates": {
+          "type": "boolean",
+          "description": "Opt-in for WhatsApp inquiry follow-ups."
+        },
+        "cookieConsent": {
+          "type": "string",
+          "enum": ["accepted", "dismissed", "unset"],
+          "description": "Stored cookie banner consent preference."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server-assigned timestamp of last preference update."
+        }
+      },
+      "required": [
+        "userId",
+        "preferredCountry",
+        "emailNotifications",
+        "whatsappUpdates",
+        "cookieConsent",
+        "updatedAt"
+      ]
+    },
+    "WebsiteSettings": {
+      "title": "WebsiteSettings",
+      "description": "Publicly readable non-transactional storefront configuration writable exclusively by the verified administrator.",
+      "type": "object",
+      "properties": {
+        "brandName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "description": "Public storefront brand name."
+        },
+        "tagline": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Storefront subtitle/tagline."
+        },
+        "supportEmail": {
+          "type": "string",
+          "format": "email",
+          "minLength": 3,
+          "maxLength": 254,
+          "description": "Public customer support email address."
+        },
+        "supportPhone": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 40,
+          "description": "Public support phone number."
+        },
+        "announcementEnabled": {
+          "type": "boolean",
+          "description": "Controls top announcement bar visibility."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server-assigned update timestamp."
+        },
+        "updatedBy": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Administrator UID who last updated settings."
+        }
+      },
+      "required": [
+        "brandName",
+        "tagline",
+        "supportEmail",
+        "supportPhone",
+        "announcementEnabled",
+        "updatedAt",
+        "updatedBy"
+      ]
+    },
+    "SupportMessage": {
+      "title": "SupportMessage",
+      "description": "Authenticated customer support inquiry scoped to its author and verified administrator.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Author Firebase Auth UID."
+        },
+        "senderName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "description": "Customer display name."
+        },
+        "senderEmail": {
+          "type": "string",
+          "format": "email",
+          "minLength": 3,
+          "maxLength": 254,
+          "description": "Customer account email."
+        },
+        "subject": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 160,
+          "description": "Support inquiry subject line."
+        },
+        "message": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 2000,
+          "description": "Support message body."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["open", "in_progress", "resolved"],
+          "description": "Ticket lifecycle status."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server-assigned creation timestamp."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server-assigned update timestamp."
+        }
+      },
+      "required": [
+        "userId",
+        "senderName",
+        "senderEmail",
+        "subject",
+        "message",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/CustomerProfile" },
+      "description": "Private customer profile documents restricted to the owner and verified administrator."
+    },
+    "/userPreferences/{userId}": {
+      "schema": { "$ref": "#/entities/UserPreferences" },
+      "description": "User-owned storefront and communication preferences."
+    },
+    "/settings/{settingId}": {
+      "schema": { "$ref": "#/entities/WebsiteSettings" },
+      "description": "Public non-transactional website settings (/settings/public) writable only by the verified administrator."
+    },
+    "/supportMessages/{messageId}": {
+      "schema": { "$ref": "#/entities/SupportMessage" },
+      "description": "Customer support inquiries readable only by the submitting user or verified administrator."
+    }
+  }
+}

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Check, Minus, Plus, ShieldCheck, ShoppingBag, X } from 'lucide-react';
 import { Product, ProductVariant } from '../types';
 import { buildSingleProductWhatsAppUrl } from '../utils/whatsapp';
+import { useDialogAccessibility } from '../utils/useDialogAccessibility';
 import { SafeImage } from './SafeImage';
 import { WhatsAppIcon } from './WhatsAppIcon';
 
@@ -21,6 +22,8 @@ export function ProductModal({ product, selectedCountry, onClose, onAddToCart }:
   const [quantity, setQuantity] = useState<number>(1);
   const [justAdded, setJustAdded] = useState<boolean>(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const addedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (product && product.variants.length > 0) {
@@ -28,23 +31,15 @@ export function ProductModal({ product, selectedCountry, onClose, onAddToCart }:
       setQuantity(1);
       setJustAdded(false);
     }
+    return () => {
+      if (addedTimerRef.current) {
+        clearTimeout(addedTimerRef.current);
+        addedTimerRef.current = null;
+      }
+    };
   }, [product]);
 
-  useEffect(() => {
-    if (!product) return;
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    closeButtonRef.current?.focus();
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.body.style.overflow = prevOverflow;
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [product, onClose]);
+  useDialogAccessibility(Boolean(product), dialogRef, closeButtonRef, onClose);
 
   if (!product) return null;
 
@@ -56,8 +51,12 @@ export function ProductModal({ product, selectedCountry, onClose, onAddToCart }:
   const handleAdd = () => {
     onAddToCart(product, activeVariant, quantity);
     setJustAdded(true);
-    setTimeout(() => {
+    if (addedTimerRef.current) {
+      clearTimeout(addedTimerRef.current);
+    }
+    addedTimerRef.current = setTimeout(() => {
       setJustAdded(false);
+      addedTimerRef.current = null;
     }, 1800);
   };
 
@@ -71,7 +70,10 @@ export function ProductModal({ product, selectedCountry, onClose, onAddToCart }:
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="relative w-full max-w-3xl max-h-[92vh] overflow-y-auto bg-[#0A1220] border border-white/15 rounded-2xl shadow-2xl">
+      <div
+        ref={dialogRef}
+        className="relative w-full max-w-3xl max-h-[92vh] overflow-y-auto bg-[#0A1220] border border-white/15 rounded-2xl shadow-2xl"
+      >
         <button
           ref={closeButtonRef}
           type="button"
@@ -133,7 +135,7 @@ export function ProductModal({ product, selectedCountry, onClose, onAddToCart }:
 
               <div className="mt-3 flex items-baseline gap-3">
                 {activeVariant.originalPrice && (
-                  <span className="text-base font-mono text-slate-500 line-through tabular-nums">
+                  <span className="text-base font-mono text-slate-400 line-through tabular-nums">
                     ${activeVariant.originalPrice.toFixed(2)}
                   </span>
                 )}

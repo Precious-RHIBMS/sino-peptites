@@ -1,6 +1,7 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { X } from 'lucide-react';
 import { PolicyType } from '../types';
+import { useDialogAccessibility } from '../utils/useDialogAccessibility';
 
 interface PolicyModalProps {
   policy: PolicyType;
@@ -21,22 +22,9 @@ export function PolicyModal({
   onClose,
 }: PolicyModalProps) {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (!policy) return;
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    closeButtonRef.current?.focus();
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.body.style.overflow = prevOverflow;
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [policy, onClose]);
+  useDialogAccessibility(Boolean(policy), dialogRef, closeButtonRef, onClose);
 
   if (!policy) return null;
 
@@ -55,11 +43,11 @@ export function PolicyModal({
         },
         {
           heading: 'Temperature-Buffered Packaging',
-          body: 'Sensitive botanical serums and cold-pressed extracts are packed in insulated sleeves alongside lot-matched Certificates of Analysis. Parcels leave our Portland facility within 24–48 business hours.',
+          body: 'Lyophilized peptide vials and temperature-sensitive formulations are packed in insulated sleeves alongside lot-matched Certificates of Analysis. Parcels leave our Portland facility within 24–48 business hours.',
         },
         {
           heading: 'International Customs & Documentation',
-          body: 'Each international shipment includes full commercial botanical nomenclature and purity certificates to facilitate smooth customs clearance.',
+          body: 'Each international shipment includes full commercial laboratory nomenclature and purity certificates to facilitate smooth customs clearance.',
         },
       ],
     },
@@ -109,7 +97,10 @@ export function PolicyModal({
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="w-full max-w-lg bg-[#0A1220] border border-white/15 rounded-2xl p-6 sm:p-7 shadow-2xl">
+      <div
+        ref={dialogRef}
+        className="w-full max-w-lg bg-[#0A1220] border border-white/15 rounded-2xl p-6 sm:p-7 shadow-2xl"
+      >
         <div className="flex items-start justify-between gap-4">
           <div>
             <span className="text-xs font-mono text-[#1E90FF]">{active.updated}</span>

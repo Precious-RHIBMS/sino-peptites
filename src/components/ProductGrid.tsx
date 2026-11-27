@@ -238,7 +238,7 @@ export function ProductGrid({
                   <div className="p-3.5 sm:p-4 pt-3 flex flex-col gap-2.5">
                     {priceInfo.saleOriginal ? (
                       <p className="text-sm font-mono font-medium tabular-nums flex items-center gap-2">
-                        <span className="text-slate-500 line-through">{priceInfo.saleOriginal}</span>
+                        <span className="text-slate-400 line-through">{priceInfo.saleOriginal}</span>
                         <span className="text-white font-semibold">{priceInfo.saleCurrent}</span>
                       </p>
                     ) : (

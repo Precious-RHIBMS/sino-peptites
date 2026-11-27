@@ -1,19 +1,24 @@
 import { FormEvent, useEffect, useState } from 'react';
-import { Menu, Search, ShoppingBag, X } from 'lucide-react';
+import { Menu, Search, ShoppingBag, User, X } from 'lucide-react';
 
 interface NavbarProps {
   brandName: string;
+  activeView: 'store' | 'about' | 'checkout';
   searchQuery: string;
   onSearchChange: (value: string) => void;
   onSearchSubmit: () => void;
   cartCount: number;
   cartTotal: number;
+  userLabel?: string | null;
+  onOpenAccount: () => void;
   onOpenCart: () => void;
+  onOpenAbout: () => void;
   onNavigateSection: (sectionId: string) => void;
 }
 
 const NAV_ITEMS = [
   { label: 'Home', id: 'home' },
+  { label: 'About', id: 'about' },
   { label: 'Our Story', id: 'our-story' },
   { label: 'Certificates', id: 'certificates' },
   { label: 'Store', id: 'store' },
@@ -28,12 +33,16 @@ const NAV_ITEMS = [
  */
 export function Navbar({
   brandName,
+  activeView,
   searchQuery,
   onSearchChange,
   onSearchSubmit,
   cartCount,
   cartTotal,
+  userLabel,
+  onOpenAccount,
   onOpenCart,
+  onOpenAbout,
   onNavigateSection,
 }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -54,7 +63,11 @@ export function Navbar({
   };
 
   const handleNavClick = (id: string) => {
-    onNavigateSection(id);
+    if (id === 'about') {
+      onOpenAbout();
+    } else {
+      onNavigateSection(id);
+    }
     setMobileMenuOpen(false);
   };
 
@@ -78,19 +91,27 @@ export function Navbar({
           aria-label="Primary Navigation"
           className="hidden lg:flex items-center gap-4 xl:gap-5 text-[13px] font-medium text-slate-700"
         >
-          {NAV_ITEMS.map((item) => (
-            <a
-              key={item.id}
-              href={`#${item.id}`}
-              onClick={(e) => {
-                e.preventDefault();
-                handleNavClick(item.id);
-              }}
-              className="hover:text-[#1673D6] transition-colors whitespace-nowrap shrink-0 py-2 border-b-2 border-transparent hover:border-[#1E90FF] rounded-t"
-            >
-              {item.label}
-            </a>
-          ))}
+          {NAV_ITEMS.map((item) => {
+            const isActive = item.id === 'about' && activeView === 'about';
+            return (
+              <a
+                key={item.id}
+                href={`#${item.id}`}
+                aria-current={isActive ? 'page' : undefined}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavClick(item.id);
+                }}
+                className={`transition-colors whitespace-nowrap shrink-0 py-2 border-b-2 rounded-t ${
+                  isActive
+                    ? 'text-[#1673D6] border-[#1E90FF] font-semibold'
+                    : 'border-transparent hover:text-[#1673D6] hover:border-[#1E90FF]'
+                }`}
+              >
+                {item.label}
+              </a>
+            );
+          })}
         </nav>
 
         {/* Right Controls: Search + Cart Total + Mobile Menu Trigger */}
@@ -112,6 +133,18 @@ export function Navbar({
               className="w-40 xl:w-48 min-h-[40px] pl-9 pr-3 py-1.5 text-sm md:text-xs bg-slate-100 text-[#050B14] placeholder:text-slate-600 rounded-lg border border-slate-300 focus:outline-none focus:bg-white focus:border-[#1E90FF] transition-colors"
             />
           </form>
+
+          <button
+            type="button"
+            onClick={onOpenAccount}
+            aria-label={userLabel ? `Open account for ${userLabel}` : 'Sign in or open customer account'}
+            className="inline-flex items-center gap-2 min-h-[44px] px-3 py-2 rounded-lg border border-slate-300 bg-white text-[#050B14] hover:bg-slate-100 transition-colors text-xs font-semibold whitespace-nowrap shrink-0"
+          >
+            <User className="h-4 w-4 text-[#1673D6]" aria-hidden="true" />
+            <span className="hidden sm:inline max-w-[110px] truncate">
+              {userLabel || 'Account'}
+            </span>
+          </button>
 
           <button
             type="button"
@@ -166,19 +199,27 @@ export function Navbar({
           </form>
 
           <nav aria-label="Mobile Navigation" className="grid grid-cols-2 gap-2">
-            {NAV_ITEMS.map((item) => (
-              <a
-                key={item.id}
-                href={`#${item.id}`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleNavClick(item.id);
-                }}
-                className="min-h-[44px] flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-slate-800 hover:bg-slate-100 hover:text-[#1673D6] transition-colors"
-              >
-                {item.label}
-              </a>
-            ))}
+            {NAV_ITEMS.map((item) => {
+              const isActive = item.id === 'about' && activeView === 'about';
+              return (
+                <a
+                  key={item.id}
+                  href={`#${item.id}`}
+                  aria-current={isActive ? 'page' : undefined}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNavClick(item.id);
+                  }}
+                  className={`min-h-[44px] flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                    isActive
+                      ? 'bg-[#1E90FF]/10 text-[#1673D6] font-semibold'
+                      : 'text-slate-800 hover:bg-slate-100 hover:text-[#1673D6]'
+                  }`}
+                >
+                  {item.label}
+                </a>
+              );
+            })}
           </nav>
         </div>
       )}

@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { ArrowRight, Minus, Plus, ShoppingBag, Trash2, X } from 'lucide-react';
 import { CartItem } from '../types';
 import { buildCartWhatsAppUrl } from '../utils/whatsapp';
+import { useDialogAccessibility } from '../utils/useDialogAccessibility';
 import { SafeImage } from './SafeImage';
 import { WhatsAppIcon } from './WhatsAppIcon';
 
@@ -37,22 +38,9 @@ export function CartDrawer({
   onProceedToCheckout,
 }: CartDrawerProps) {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const drawerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (!isOpen) return;
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    closeButtonRef.current?.focus();
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.body.style.overflow = prevOverflow;
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [isOpen, onClose]);
+  useDialogAccessibility(isOpen, drawerRef, closeButtonRef, onClose);
 
   if (!isOpen) return null;
 
@@ -69,7 +57,10 @@ export function CartDrawer({
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="w-full max-w-md bg-[#0A1220] border-l border-white/10 h-full flex flex-col shadow-2xl">
+      <div
+        ref={drawerRef}
+        className="w-full max-w-md bg-[#0A1220] border-l border-white/10 h-full flex flex-col shadow-2xl"
+      >
         {/* Drawer Header */}
         <div className="px-6 py-5 border-b border-white/10 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
@@ -128,7 +119,7 @@ export function CartDrawer({
               <button
                 type="button"
                 onClick={onClose}
-                className="mt-5 px-5 py-2.5 rounded-lg bg-[#1E90FF] hover:bg-[#197FE6] text-white text-xs font-semibold transition-colors"
+                className="mt-5 min-h-[44px] px-5 py-2.5 rounded-lg bg-[#1673D6] hover:bg-[#1E90FF] text-white text-xs sm:text-sm font-semibold transition-colors"
               >
                 Browse Catalog
               </button>

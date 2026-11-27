@@ -91,7 +91,7 @@ export function CheckoutView({
       return;
     }
 
-    const orderNum = `VB-${Math.floor(100000 + Math.random() * 900000)}`;
+    const orderNum = `SP-${Math.floor(100000 + Math.random() * 900000)}`;
     setConfirmation({
       orderNumber: orderNum,
       customerName: fullName.trim(),
@@ -499,7 +499,7 @@ export function CheckoutView({
                       </div>
                       <div>
                         <span className="text-slate-400 block font-sans">Routing / SWIFT</span>
-                        121000358 · VBOTUS33
+                        121000358 · SPPTUS33
                       </div>
                       <div>
                         <span className="text-slate-400 block font-sans">Account Number</span>

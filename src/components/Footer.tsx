@@ -10,6 +10,7 @@ interface FooterProps {
     hours: string;
   };
   onOpenPolicy: (policy: PolicyType) => void;
+  onOpenAbout: () => void;
   onNavigateSection: (sectionId: string) => void;
 }
 
@@ -21,6 +22,7 @@ export function Footer({
   brandName,
   contact,
   onOpenPolicy,
+  onOpenAbout,
   onNavigateSection,
 }: FooterProps) {
   return (
@@ -110,6 +112,7 @@ export function Footer({
             {[
               { label: 'Store Catalog', id: 'store' },
               { label: 'Shop by Category', id: 'categories' },
+              { label: 'About Us', id: 'about' },
               { label: 'Our Story', id: 'our-story' },
               { label: 'Lab Certificates', id: 'certificates' },
             ].map((link) => (
@@ -118,7 +121,11 @@ export function Footer({
                   href={`#${link.id}`}
                   onClick={(e) => {
                     e.preventDefault();
-                    onNavigateSection(link.id);
+                    if (link.id === 'about') {
+                      onOpenAbout();
+                    } else {
+                      onNavigateSection(link.id);
+                    }
                   }}
                   className="min-h-[40px] inline-flex items-center text-slate-300 hover:text-[#1E90FF] transition-colors"
                 >

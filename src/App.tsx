@@ -1,5 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { AboutPage } from './components/AboutPage';
 import { AnnouncementBar } from './components/AnnouncementBar';
+import { AuthModal } from './components/AuthModal';
 import { CartDrawer } from './components/CartDrawer';
 import { CategoryGrid } from './components/CategoryGrid';
 import { CheckoutView } from './components/CheckoutView';
@@ -13,25 +15,107 @@ import { ProductModal } from './components/ProductModal';
 import { StoryAndCertificates } from './components/StoryAndCertificates';
 import { TestimonialsSection } from './components/TestimonialsSection';
 import { WhatsAppFloatButton } from './components/WhatsAppFloatButton';
+import { useAuth } from './context/AuthContext';
 import { CATEGORIES, CERTIFICATES, PRODUCTS, STORE_CONFIG, TESTIMONIALS } from './products.js';
 import { CartItem, PolicyType, Product, ProductVariant } from './types';
 
+const CART_STORAGE_KEY = 'sinopepts_cart_v1';
+const COUNTRY_STORAGE_KEY = 'sinopepts_country_v1';
+
+function loadStoredCart(): CartItem[] {
+  try {
+    const raw = window.localStorage.getItem(CART_STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter(
+      (item): item is CartItem =>
+        Boolean(item) &&
+        typeof item.productId === 'string' &&
+        typeof item.variantId === 'string' &&
+        typeof item.name === 'string' &&
+        typeof item.unitPrice === 'number' &&
+        typeof item.quantity === 'number' &&
+        item.quantity > 0
+    );
+  } catch {
+    return [];
+  }
+}
+
+function loadStoredCountry(): string {
+  try {
+    const stored = window.localStorage.getItem(COUNTRY_STORAGE_KEY);
+    return stored && stored.trim().length > 0 ? stored : 'United States';
+  } catch {
+    return 'United States';
+  }
+}
+
 /**
  * sino_pepts Storefront Application
- * Runs fully client-side from local products.js catalog with in-memory cart state.
+ * Runs fully client-side from local products.js catalog with safe localStorage UI persistence.
  */
 export default function App() {
+  const { user, profile, preferences, websiteSettings } = useAuth();
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [sortBy, setSortBy] = useState<SortOption>('featured');
 
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [cartItems, setCartItems] = useState<CartItem[]>(loadStoredCart);
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
-  const [isCheckoutView, setIsCheckoutView] = useState<boolean>(false);
+  const [isAccountOpen, setIsAccountOpen] = useState<boolean>(false);
+  const [currentView, setCurrentView] = useState<'store' | 'about' | 'checkout'>('store');
   const [activePolicy, setActivePolicy] = useState<PolicyType>(null);
-  const [selectedCountry, setSelectedCountry] = useState<string>('United States');
+  const [selectedCountry, setSelectedCountry] = useState<string>(loadStoredCountry);
   const [liveAnnouncement, setLiveAnnouncement] = useState<string>('');
+
+  const effectiveBrandName = websiteSettings?.brandName || STORE_CONFIG.brandName;
+  const effectiveTagline = websiteSettings?.tagline || STORE_CONFIG.tagline;
+  const effectiveShippingFee = STORE_CONFIG.shippingFee;
+  const effectiveFreeThreshold = STORE_CONFIG.freeShippingThreshold;
+  const effectiveContact = useMemo(
+    () => ({
+      ...STORE_CONFIG.contact,
+      email: websiteSettings?.supportEmail || STORE_CONFIG.contact.email,
+      phone: websiteSettings?.supportPhone || STORE_CONFIG.contact.phone,
+    }),
+    [websiteSettings]
+  );
+
+  useEffect(() => {
+    const syncedCountry = preferences?.preferredCountry || profile?.preferredCountry;
+    if (syncedCountry && syncedCountry.trim().length >= 2) {
+      setSelectedCountry(syncedCountry);
+    }
+  }, [preferences?.preferredCountry, profile?.preferredCountry]);
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
+    } catch {
+      // Ignore storage errors when localStorage is unavailable
+    }
+  }, [cartItems]);
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(COUNTRY_STORAGE_KEY, selectedCountry);
+    } catch {
+      // Ignore storage errors when localStorage is unavailable
+    }
+  }, [selectedCountry]);
+
+  useEffect(() => {
+    if (currentView === 'about') {
+      document.title = `About — ${effectiveBrandName}`;
+    } else if (currentView === 'checkout') {
+      document.title = `Checkout — ${effectiveBrandName}`;
+    } else {
+      document.title = `${effectiveBrandName} — ${effectiveTagline}`;
+    }
+  }, [currentView, effectiveBrandName, effectiveTagline]);
 
   // Derived cart totals recalculated on every state update
   const cartCount = useMemo(
@@ -46,8 +130,8 @@ export default function App() {
 
   const shippingFee = useMemo(() => {
     if (cartItems.length === 0) return 0;
-    return subtotal >= STORE_CONFIG.freeShippingThreshold ? 0 : STORE_CONFIG.shippingFee;
-  }, [cartItems.length, subtotal]);
+    return subtotal >= effectiveFreeThreshold ? 0 : effectiveShippingFee;
+  }, [cartItems.length, subtotal, effectiveFreeThreshold, effectiveShippingFee]);
 
   const grandTotal = useMemo(() => subtotal + shippingFee, [subtotal, shippingFee]);
 
@@ -87,10 +171,10 @@ export default function App() {
     return matched;
   }, [activeCategory, searchQuery, sortBy]);
 
-  // Smooth section navigation (exits checkout view if active)
+  // Smooth section navigation (exits about/checkout views if active)
   const handleNavigateSection = (sectionId: string) => {
-    if (isCheckoutView) {
-      setIsCheckoutView(false);
+    if (currentView !== 'store') {
+      setCurrentView('store');
       setTimeout(() => {
         const el = document.getElementById(sectionId);
         el?.scrollIntoView({ behavior: 'smooth' });
@@ -99,6 +183,11 @@ export default function App() {
       const el = document.getElementById(sectionId);
       el?.scrollIntoView({ behavior: 'smooth' });
     }
+  };
+
+  const handleOpenAbout = () => {
+    setCurrentView('about');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleSelectCategory = (categoryId: string) => {
@@ -166,7 +255,7 @@ export default function App() {
 
   const handleProceedToCheckout = () => {
     setIsCartOpen(false);
-    setIsCheckoutView(true);
+    setCurrentView('checkout');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -188,27 +277,33 @@ export default function App() {
       </div>
 
       {/* 1. Top Announcement Bar */}
-      <AnnouncementBar
-        shippingFee={STORE_CONFIG.shippingFee}
-        freeThreshold={STORE_CONFIG.freeShippingThreshold}
-        onOpenPolicy={setActivePolicy}
-      />
+      {(websiteSettings?.announcementEnabled ?? true) && (
+        <AnnouncementBar
+          shippingFee={effectiveShippingFee}
+          freeThreshold={effectiveFreeThreshold}
+          onOpenPolicy={setActivePolicy}
+        />
+      )}
 
       {/* 2. Sticky White Header */}
       <Navbar
-        brandName={STORE_CONFIG.brandName}
+        brandName={effectiveBrandName}
+        activeView={currentView}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         onSearchSubmit={handleSearchSubmit}
         cartCount={cartCount}
         cartTotal={subtotal}
+        userLabel={user ? profile?.displayName || user.displayName || 'Account' : null}
+        onOpenAccount={() => setIsAccountOpen(true)}
         onOpenCart={() => setIsCartOpen(true)}
+        onOpenAbout={handleOpenAbout}
         onNavigateSection={handleNavigateSection}
       />
 
-      {/* Main Content Area: Storefront or Checkout */}
+      {/* Main Content Area: Storefront, About, or Checkout */}
       <main id="main-content" tabIndex={-1} className="flex-1 focus:outline-none">
-        {isCheckoutView ? (
+        {currentView === 'checkout' ? (
           <CheckoutView
             items={cartItems}
             subtotal={subtotal}
@@ -217,10 +312,22 @@ export default function App() {
             selectedCountry={selectedCountry}
             onCountryChange={setSelectedCountry}
             onBackToStore={() => {
-              setIsCheckoutView(false);
+              setCurrentView('store');
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
             onOrderComplete={handleOrderComplete}
+          />
+        ) : currentView === 'about' ? (
+          <AboutPage
+            brandName={effectiveBrandName}
+            products={PRODUCTS as Product[]}
+            contact={effectiveContact}
+            onBackToStore={() => {
+              setCurrentView('store');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            onNavigateSection={handleNavigateSection}
+            onSelectProduct={setSelectedProduct}
           />
         ) : (
           <>
@@ -264,9 +371,10 @@ export default function App() {
 
       {/* 7. Footer (Payment Options + Contact + Policies + Socials) */}
       <Footer
-        brandName={STORE_CONFIG.brandName}
-        contact={STORE_CONFIG.contact}
+        brandName={effectiveBrandName}
+        contact={effectiveContact}
         onOpenPolicy={setActivePolicy}
+        onOpenAbout={handleOpenAbout}
         onNavigateSection={handleNavigateSection}
       />
 
@@ -284,7 +392,7 @@ export default function App() {
         items={cartItems}
         subtotal={subtotal}
         shippingFee={shippingFee}
-        freeThreshold={STORE_CONFIG.freeShippingThreshold}
+        freeThreshold={effectiveFreeThreshold}
         total={grandTotal}
         selectedCountry={selectedCountry}
         onClose={() => setIsCartOpen(false)}
@@ -296,13 +404,21 @@ export default function App() {
       {/* 10. Policy Modal */}
       <PolicyModal
         policy={activePolicy}
-        shippingFee={STORE_CONFIG.shippingFee}
-        freeThreshold={STORE_CONFIG.freeShippingThreshold}
-        contactEmail={STORE_CONFIG.contact.email}
+        shippingFee={effectiveShippingFee}
+        freeThreshold={effectiveFreeThreshold}
+        contactEmail={effectiveContact.email}
         onClose={() => setActivePolicy(null)}
       />
 
-      {/* 11. Floating WhatsApp Chat & Dismissible Cookie Banner */}
+      {/* 11. Customer Account, Auth, Preferences & Support Modal */}
+      <AuthModal
+        isOpen={isAccountOpen}
+        selectedCountry={selectedCountry}
+        onCountryChange={setSelectedCountry}
+        onClose={() => setIsAccountOpen(false)}
+      />
+
+      {/* 12. Floating WhatsApp Chat & Dismissible Cookie Banner */}
       <WhatsAppFloatButton />
       <CookieBanner onOpenPrivacy={setActivePolicy} />
     </div>

@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { Award, CheckCircle2, FileText, Microscope, X } from 'lucide-react';
 import { Certificate } from '../types';
+import { useDialogAccessibility } from '../utils/useDialogAccessibility';
 
 interface StoryAndCertificatesProps {
   certificates: Certificate[];
@@ -13,22 +14,10 @@ interface StoryAndCertificatesProps {
 export function StoryAndCertificates({ certificates }: StoryAndCertificatesProps) {
   const [selectedCert, setSelectedCert] = useState<Certificate | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const handleCloseCert = useCallback(() => setSelectedCert(null), []);
 
-  useEffect(() => {
-    if (!selectedCert) return;
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    closeButtonRef.current?.focus();
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setSelectedCert(null);
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.body.style.overflow = prevOverflow;
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [selectedCert]);
+  useDialogAccessibility(Boolean(selectedCert), dialogRef, closeButtonRef, handleCloseCert);
 
   return (
     <section
@@ -144,7 +133,10 @@ export function StoryAndCertificates({ certificates }: StoryAndCertificatesProps
             if (e.target === e.currentTarget) setSelectedCert(null);
           }}
         >
-          <div className="w-full max-w-lg bg-[#0A1220] border border-white/15 rounded-2xl p-6 sm:p-7 shadow-2xl">
+          <div
+            ref={dialogRef}
+            className="w-full max-w-lg bg-[#0A1220] border border-white/15 rounded-2xl p-6 sm:p-7 shadow-2xl"
+          >
             <div className="flex items-start justify-between gap-4">
               <div>
                 <span className="text-xs font-mono text-[#1E90FF] font-semibold">

@@ -61,7 +61,7 @@ export const CERTIFICATES = [
   {
     id: 'COA-2611-A',
     title: 'RP-HPLC Peptide Purity Assay',
-    batchCode: 'LOT #VB-2611-04',
+    batchCode: 'LOT #SP-2611-04',
     standard: 'ISO/IEC 17025 Accredited Lab',
     result: '99.4% Active Purity · Pass',
     testedDate: 'November 12, 2026',
@@ -76,7 +76,7 @@ export const CERTIFICATES = [
   {
     id: 'COA-2611-B',
     title: 'LC-MS Molecular Weight & Identity',
-    batchCode: 'LOT #VB-2611-09',
+    batchCode: 'LOT #SP-2611-09',
     standard: 'ESI-TOF Mass Spectrometry',
     result: 'Exact Mass Confirmed · Pass',
     testedDate: 'November 14, 2026',
@@ -91,7 +91,7 @@ export const CERTIFICATES = [
   {
     id: 'COA-2611-C',
     title: 'Endotoxin & Sterility Screening',
-    batchCode: 'LOT #VB-2610-18',
+    batchCode: 'LOT #SP-2610-18',
     standard: 'USP <85> LAL Chromogenic',
     result: '<0.05 EU/mg · Pass',
     testedDate: 'October 29, 2026',
@@ -106,7 +106,7 @@ export const CERTIFICATES = [
   {
     id: 'COA-2611-D',
     title: 'Cold-Chain & Vial Stability Panel',
-    batchCode: 'LOT #VB-2611-02',
+    batchCode: 'LOT #SP-2611-02',
     standard: 'ICH Q1A Thermal Stability',
     result: '100% Assay Retention · Pass',
     testedDate: 'November 08, 2026',
@@ -126,7 +126,7 @@ export const CERTIFICATES = [
 export const PRODUCTS = [
   {
     id: 'prod-tesamorelin-10mg',
-    sku: 'VB-PEP-101',
+    sku: 'SP-PEP-101',
     name: 'Tesamorelin 10mg',
     categoryId: 'other-peptides',
     categoryName: 'Other Peptides',
@@ -150,7 +150,7 @@ export const PRODUCTS = [
   },
   {
     id: 'prod-nad-plus',
-    sku: 'VB-NAD-102',
+    sku: 'SP-NAD-102',
     name: 'NAD+',
     categoryId: 'other-peptides',
     categoryName: 'Other Peptides',
@@ -174,7 +174,7 @@ export const PRODUCTS = [
   },
   {
     id: 'prod-lipo-b-10ml',
-    sku: 'VB-LIP-103',
+    sku: 'SP-LIP-103',
     name: 'LIPO-B 10ml',
     categoryId: 'other-peptides',
     categoryName: 'Other Peptides',
@@ -197,7 +197,7 @@ export const PRODUCTS = [
   },
   {
     id: 'prod-selank',
-    sku: 'VB-SLK-104',
+    sku: 'SP-SLK-104',
     name: 'Selank',
     categoryId: 'other-peptides',
     categoryName: 'Other Peptides',
@@ -220,7 +220,7 @@ export const PRODUCTS = [
   },
   {
     id: 'prod-retatrutide',
-    sku: 'VB-RET-201',
+    sku: 'SP-RET-201',
     name: 'RETATRUTIDE',
     categoryId: 'lab-peptide',
     categoryName: 'Lab Peptide',
@@ -244,7 +244,7 @@ export const PRODUCTS = [
   },
   {
     id: 'prod-semaglutide',
-    sku: 'VB-SEM-202',
+    sku: 'SP-SEM-202',
     name: 'SEMAGLUTIDE',
     categoryId: 'lab-peptide',
     categoryName: 'Lab Peptide',
@@ -268,7 +268,7 @@ export const PRODUCTS = [
   },
   {
     id: 'prod-b12',
-    sku: 'VB-B12-203',
+    sku: 'SP-B12-203',
     name: 'B12',
     categoryId: 'lab-peptide',
     categoryName: 'Lab Peptide',
@@ -291,7 +291,7 @@ export const PRODUCTS = [
   },
   {
     id: 'prod-bacteriostatic-water',
-    sku: 'VB-BSW-301',
+    sku: 'SP-BSW-301',
     name: 'Bacteriostatic Water',
     categoryId: 'bacteriostatic-water',
     categoryName: 'Bacteriostatic Water',
@@ -314,7 +314,7 @@ export const PRODUCTS = [
   },
   {
     id: 'prod-orlistat-120mg',
-    sku: 'VB-ORL-401',
+    sku: 'SP-ORL-401',
     name: 'Orlistat 120mg Capsules – Clinically Proven Fat Reduction Support',
     categoryId: 'metabolic-support',
     categoryName: 'Metabolic Support',
@@ -337,7 +337,7 @@ export const PRODUCTS = [
   },
   {
     id: 'prod-semax',
-    sku: 'VB-SMX-105',
+    sku: 'SP-SMX-105',
     name: 'SEMAX',
     categoryId: 'other-peptides',
     categoryName: 'Other Peptides',
@@ -360,7 +360,7 @@ export const PRODUCTS = [
   },
   {
     id: 'prod-lipo-c',
-    sku: 'VB-LPC-106',
+    sku: 'SP-LPC-106',
     name: 'LIPO-C',
     categoryId: 'other-peptides',
     categoryName: 'Other Peptides',
@@ -383,7 +383,7 @@ export const PRODUCTS = [
   },
   {
     id: 'prod-glutaone-1200mg',
-    sku: 'VB-GLU-107',
+    sku: 'SP-GLU-107',
     name: 'Glutaone Inj. 1200mg',
     categoryId: 'other-peptides',
     categoryName: 'Other Peptides',
@@ -406,7 +406,7 @@ export const PRODUCTS = [
   },
   {
     id: 'prod-mots-c',
-    sku: 'VB-MTC-108',
+    sku: 'SP-MTC-108',
     name: 'MOTS-C',
     categoryId: 'other-peptides',
     categoryName: 'Other Peptides',

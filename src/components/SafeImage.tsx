@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FlaskConical } from 'lucide-react';
 
 interface SafeImageProps {
@@ -14,6 +14,10 @@ interface SafeImageProps {
  */
 export function SafeImage({ src, alt, className = '', fallbackTitle }: SafeImageProps) {
   const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    setHasError(false);
+  }, [src]);
 
   if (hasError || !src) {
     return (
