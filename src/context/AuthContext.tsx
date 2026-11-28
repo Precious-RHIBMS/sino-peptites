@@ -93,6 +93,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [websiteSettings, setWebsiteSettings] = useState<WebsiteSettings | null>(null);
   const [supportMessages, setSupportMessages] = useState<SupportMessage[]>([]);
   const [authReady, setAuthReady] = useState<boolean>(false);
+  const [authRevision, setAuthRevision] = useState<number>(0);
   const [isBusy, setIsBusy] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -256,7 +257,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setError(null);
     try {
       const updated = await refreshCurrentUser();
-      setUser(updated ? ({ ...updated } as User) : null);
+      setUser(updated);
+      setAuthRevision((prev) => prev + 1);
       if (updated) {
         const loadedProfile = await getCustomerProfile(updated.uid).catch(() => null);
         setProfile(loadedProfile);
@@ -273,6 +275,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const saveProfile = useCallback(
     async (updates: { displayName?: string; phone?: string; preferredCountry?: string }) => {
       if (!user) return false;
+      if (!user.emailVerified) {
+        setError('Please verify your email address before updating your account profile.');
+        return false;
+      }
       setIsBusy(true);
       setError(null);
       try {
@@ -375,6 +381,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       websiteSettings,
       supportMessages,
       authReady,
+      authRevision,
       isBusy,
       error,
       clearError,

@@ -158,6 +158,14 @@ export function AuthModal({
   const handleProfileSave = async (e: FormEvent) => {
     e.preventDefault();
     setNotice('');
+    if (!user?.emailVerified) {
+      await saveProfile({
+        displayName: editName,
+        phone: editPhone,
+        preferredCountry: editCountry,
+      });
+      return;
+    }
     const okProfile = await saveProfile({
       displayName: editName,
       phone: editPhone,
@@ -165,14 +173,12 @@ export function AuthModal({
     });
     if (okProfile) {
       onCountryChange(editCountry);
-      if (user?.emailVerified) {
-        await savePreferences({
-          preferredCountry: editCountry,
-          emailNotifications: emailNotifs,
-          whatsappUpdates: whatsappNotifs,
-          cookieConsent: 'accepted',
-        });
-      }
+      await savePreferences({
+        preferredCountry: editCountry,
+        emailNotifications: emailNotifs,
+        whatsappUpdates: whatsappNotifs,
+        cookieConsent: 'accepted',
+      });
       setNotice('Account profile and preferences updated.');
     }
   };
@@ -475,7 +481,7 @@ export function AuthModal({
             {!user.emailVerified && (
               <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 space-y-3">
                 <p className="text-xs text-amber-200 leading-relaxed">
-                  Verify your email address to unlock synced cloud preferences and support tickets.
+                  Verify your email address first to unlock profile updates, synced cloud preferences, and support tickets.
                 </p>
                 <div className="flex flex-wrap gap-2">
                   <button
@@ -606,10 +612,16 @@ export function AuthModal({
                   </label>
                 </div>
 
+                {!user.emailVerified && (
+                  <p className="text-xs text-amber-200 bg-amber-500/10 border border-amber-500/30 rounded-lg px-3 py-2">
+                    Please verify your email address before saving profile updates or preferences.
+                  </p>
+                )}
+
                 <button
                   type="submit"
-                  disabled={isBusy}
-                  className="w-full min-h-[44px] inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#1673D6] hover:bg-[#1E90FF] disabled:opacity-60 text-white text-sm font-semibold transition-colors"
+                  disabled={isBusy || !user.emailVerified}
+                  className="w-full min-h-[44px] inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#1673D6] hover:bg-[#1E90FF] disabled:opacity-60 disabled:cursor-not-allowed text-white text-sm font-semibold transition-colors"
                 >
                   {isBusy && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
                   Save Profile &amp; Preferences

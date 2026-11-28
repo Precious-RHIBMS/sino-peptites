@@ -46,6 +46,8 @@ export function mapAuthError(error: unknown): string {
         return 'This account has been disabled. Please contact support for assistance.';
       case 'auth/too-many-requests':
         return 'Too many attempts. Please wait a few minutes and try again.';
+      case 'auth/user-token-expired':
+        return 'Your session expired. Please sign in again to continue.';
       case 'auth/operation-not-allowed':
         return 'Email/Password sign-in is not yet enabled in the Firebase Console.';
       case 'auth/network-request-failed':
@@ -113,9 +115,9 @@ export async function loginCustomer(params: {
       preferredCountry: 'United States',
       emailVerified: credential.user.emailVerified,
     });
-  } else if (existing.emailVerified !== credential.user.emailVerified) {
+  } else if (credential.user.emailVerified && !existing.emailVerified) {
     await updateCustomerProfile(credential.user.uid, {
-      emailVerified: credential.user.emailVerified,
+      emailVerified: true,
     });
   }
 
@@ -141,15 +143,26 @@ export async function resendVerificationEmail(): Promise<void> {
 export async function refreshCurrentUser(): Promise<User | null> {
   const firebaseAuth = requireAuth();
   if (!firebaseAuth.currentUser) return null;
+
   await reload(firebaseAuth.currentUser);
   const refreshed = firebaseAuth.currentUser;
-  if (refreshed) {
-    const existing = await getCustomerProfile(refreshed.uid);
-    if (existing && existing.emailVerified !== refreshed.emailVerified) {
-      await updateCustomerProfile(refreshed.uid, {
-        emailVerified: refreshed.emailVerified,
-      });
+  if (!refreshed) return null;
+
+  // Force ID token refresh so request.auth.token.email_verified matches the reloaded state
+  await refreshed.getIdToken(true);
+
+  if (refreshed.emailVerified) {
+    try {
+      const existing = await getCustomerProfile(refreshed.uid);
+      if (existing && !existing.emailVerified) {
+        await updateCustomerProfile(refreshed.uid, {
+          emailVerified: true,
+        });
+      }
+    } catch (syncError) {
+      console.warn('Unable to sync email verification status to Firestore profile:', syncError);
     }
   }
+
   return refreshed;
 }

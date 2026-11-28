@@ -1,7 +1,6 @@
 import { FirebaseApp, getApp, getApps, initializeApp } from 'firebase/app';
 import { Auth, browserLocalPersistence, getAuth, setPersistence } from 'firebase/auth';
 import { Firestore, doc, getDocFromServer, getFirestore } from 'firebase/firestore';
-import firebaseAppletConfig from '../../firebase-applet-config.json';
 
 interface FirebaseWebConfig {
   apiKey: string;
@@ -18,21 +17,31 @@ function readEnv(key: string): string {
   return typeof value === 'string' ? value.trim() : '';
 }
 
+const defaultFirebaseConfig: FirebaseWebConfig = {
+  apiKey: 'AIzaSyAAfVAJq6rWMyWn3DiUoyoZX1rjN0QgF4M',
+  authDomain: 'gen-lang-client-0556039399.firebaseapp.com',
+  projectId: 'gen-lang-client-0556039399',
+  storageBucket: 'gen-lang-client-0556039399.firebasestorage.app',
+  messagingSenderId: '1095755259090',
+  appId: '1:1095755259090:web:a844125a0c13684570210b',
+  firestoreDatabaseId: '(default)',
+};
+
 /**
  * Centralized Firebase configuration prioritizing VITE_FIREBASE_* environment
- * variables with provisioned firebase-applet-config.json defaults.
+ * variables with the user-provided gen-lang-client-0556039399 defaults.
  */
 const firebaseConfig: FirebaseWebConfig = {
-  apiKey: readEnv('VITE_FIREBASE_API_KEY') || firebaseAppletConfig.apiKey,
-  authDomain: readEnv('VITE_FIREBASE_AUTH_DOMAIN') || firebaseAppletConfig.authDomain,
-  projectId: readEnv('VITE_FIREBASE_PROJECT_ID') || firebaseAppletConfig.projectId,
-  storageBucket: readEnv('VITE_FIREBASE_STORAGE_BUCKET') || firebaseAppletConfig.storageBucket,
+  apiKey: readEnv('VITE_FIREBASE_API_KEY') || defaultFirebaseConfig.apiKey,
+  authDomain: readEnv('VITE_FIREBASE_AUTH_DOMAIN') || defaultFirebaseConfig.authDomain,
+  projectId: readEnv('VITE_FIREBASE_PROJECT_ID') || defaultFirebaseConfig.projectId,
+  storageBucket: readEnv('VITE_FIREBASE_STORAGE_BUCKET') || defaultFirebaseConfig.storageBucket,
   messagingSenderId:
-    readEnv('VITE_FIREBASE_MESSAGING_SENDER_ID') || firebaseAppletConfig.messagingSenderId,
-  appId: readEnv('VITE_FIREBASE_APP_ID') || firebaseAppletConfig.appId,
+    readEnv('VITE_FIREBASE_MESSAGING_SENDER_ID') || defaultFirebaseConfig.messagingSenderId,
+  appId: readEnv('VITE_FIREBASE_APP_ID') || defaultFirebaseConfig.appId,
   firestoreDatabaseId:
     readEnv('VITE_FIREBASE_FIRESTORE_DATABASE_ID') ||
-    firebaseAppletConfig.firestoreDatabaseId,
+    defaultFirebaseConfig.firestoreDatabaseId,
 };
 
 export const isFirebaseConfigured = Boolean(
