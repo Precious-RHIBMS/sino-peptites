@@ -3,8 +3,6 @@
  * Runs completely client-side with zero backend dependencies.
  */
 
-export const WHATSAPP_NUMBER = '237XXXXXXXXX';
-
 export const STORE_CONFIG = {
   brandName: 'sino_pepts',
   tagline: 'HPLC-Verified Research Peptides & Analytical Lab Solutions',

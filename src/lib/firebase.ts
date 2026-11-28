@@ -1,6 +1,12 @@
 import { FirebaseApp, getApp, getApps, initializeApp } from 'firebase/app';
 import { Auth, browserLocalPersistence, getAuth, setPersistence } from 'firebase/auth';
-import { Firestore, doc, getDocFromServer, getFirestore } from 'firebase/firestore';
+import {
+  Firestore,
+  doc,
+  getDocFromServer,
+  getFirestore,
+  initializeFirestore,
+} from 'firebase/firestore';
 
 interface FirebaseWebConfig {
   apiKey: string;
@@ -67,10 +73,17 @@ if (isFirebaseConfigured) {
   });
 
   const dbId = firebaseConfig.firestoreDatabaseId;
-  initializedDb =
-    dbId && dbId !== '(default)'
-      ? getFirestore(initializedApp, dbId)
+  const customDbId = dbId && dbId !== '(default)' ? dbId : null;
+  try {
+    // Use long-polling so proxied/iframe browser environments don't drop WebChannel and report offline
+    initializedDb = customDbId
+      ? initializeFirestore(initializedApp, { experimentalForceLongPolling: true }, customDbId)
+      : initializeFirestore(initializedApp, { experimentalForceLongPolling: true });
+  } catch {
+    initializedDb = customDbId
+      ? getFirestore(initializedApp, customDbId)
       : getFirestore(initializedApp);
+  }
 }
 
 export const firebaseApp: FirebaseApp | null = initializedApp;

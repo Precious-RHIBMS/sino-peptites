@@ -1,10 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { ArrowRight, Minus, Plus, ShoppingBag, Trash2, X } from 'lucide-react';
 import { CartItem } from '../types';
-import { buildCartWhatsAppUrl } from '../utils/whatsapp';
 import { useDialogAccessibility } from '../utils/useDialogAccessibility';
 import { SafeImage } from './SafeImage';
-import { WhatsAppIcon } from './WhatsAppIcon';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -13,7 +11,6 @@ interface CartDrawerProps {
   shippingFee: number;
   freeThreshold: number;
   total: number;
-  selectedCountry: string;
   onClose: () => void;
   onUpdateQuantity: (variantId: string, delta: number) => void;
   onRemoveItem: (variantId: string) => void;
@@ -31,7 +28,6 @@ export function CartDrawer({
   shippingFee,
   freeThreshold,
   total,
-  selectedCountry,
   onClose,
   onUpdateQuantity,
   onRemoveItem,
@@ -216,37 +212,14 @@ export function CartDrawer({
               </div>
             </div>
 
-            <div className="space-y-2.5">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                <button
-                  type="button"
-                  onClick={onProceedToCheckout}
-                  className="min-h-[44px] inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#1673D6] hover:bg-[#1E90FF] text-white text-xs sm:text-sm font-semibold shadow-lg shadow-[#1E90FF]/20 transition-all whitespace-nowrap"
-                >
-                  Checkout
-                  <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
-                </button>
-
-                <a
-                  href={buildCartWhatsAppUrl({
-                    items,
-                    total,
-                    country: selectedCountry,
-                  })}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Order cart via WhatsApp (opens in a new tab)"
-                  className="min-h-[44px] inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#0A1220] border border-[#25D366]/55 text-[#25D366] hover:bg-[#25D366]/10 text-xs sm:text-sm font-semibold transition-colors whitespace-nowrap"
-                >
-                  <WhatsAppIcon className="h-4 w-4 shrink-0" />
-                  Order via WhatsApp
-                </a>
-              </div>
-
-              <p className="text-[11px] text-slate-300 leading-snug">
-                Prefer to talk first? Order through WhatsApp and we&apos;ll confirm everything with you.
-              </p>
-            </div>
+            <button
+              type="button"
+              onClick={onProceedToCheckout}
+              className="w-full min-h-[44px] inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#1673D6] hover:bg-[#1E90FF] text-white text-xs sm:text-sm font-semibold shadow-lg shadow-[#1E90FF]/20 transition-all whitespace-nowrap"
+            >
+              Checkout
+              <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
+            </button>
           </div>
         )}
       </div>

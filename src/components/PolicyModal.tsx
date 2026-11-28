@@ -61,7 +61,7 @@ export function PolicyModal({
         },
         {
           heading: 'Payment Security',
-          body: 'Card credentials, mobile wallet confirmations, and bank transfer references are processed solely to verify settlement and are never sold or shared with third-party data brokers.',
+          body: 'Card credentials, bank transfer references, and payment processor settlement confirmations are processed solely to verify orders and are never sold or shared with third-party data brokers.',
         },
         {
           heading: 'Your Rights',

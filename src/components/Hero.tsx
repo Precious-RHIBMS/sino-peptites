@@ -22,7 +22,7 @@ const TRUST_CARDS = [
   {
     title: 'Secure Checkout',
     description:
-      'Protected payments supporting direct bank transfer, mobile money wallets, and major cards.',
+      'Protected payments supporting major cards, direct bank transfer, and Bitcoin (BTC coming soon).',
     icon: ShieldCheck,
   },
   {

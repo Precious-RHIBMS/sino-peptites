@@ -1,8 +1,6 @@
 import { ArrowLeft, Award, FlaskConical, Mail, MessageCircle, ShieldCheck, Truck } from 'lucide-react';
 import { Product } from '../types';
-import { buildGeneralWhatsAppUrl } from '../utils/whatsapp';
 import { SafeImage } from './SafeImage';
-import { WhatsAppIcon } from './WhatsAppIcon';
 
 interface AboutPageProps {
   brandName: string;
@@ -237,17 +235,6 @@ export function AboutPage({
                 >
                   <Mail className="h-4 w-4 shrink-0" aria-hidden="true" />
                   <span>Email Us</span>
-                </a>
-
-                <a
-                  href={buildGeneralWhatsAppUrl()}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Chat with support on WhatsApp (opens in a new tab)"
-                  className="w-full min-h-[48px] inline-flex items-center justify-center gap-2.5 px-6 py-3 rounded-full bg-white text-[#050B14] hover:bg-[#25D366] hover:text-[#050B14] text-sm font-semibold shadow-md transition-colors"
-                >
-                  <WhatsAppIcon className="h-4 w-4 shrink-0" />
-                  <span>WhatsApp</span>
                 </a>
 
                 <a

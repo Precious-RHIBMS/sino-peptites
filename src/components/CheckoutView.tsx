@@ -3,16 +3,15 @@ import {
   ArrowLeft,
   Building2,
   CheckCircle2,
+  Clock,
   CreditCard,
   Lock,
-  Smartphone,
 } from 'lucide-react';
 import { CartItem } from '../types';
-import { buildCartWhatsAppUrl } from '../utils/whatsapp';
+import { BitcoinIcon } from './BitcoinIcon';
 import { SafeImage } from './SafeImage';
-import { WhatsAppIcon } from './WhatsAppIcon';
 
-export type PaymentMethod = 'card' | 'bank-transfer' | 'mobile-money';
+export type PaymentMethod = 'card' | 'bank-transfer' | 'bitcoin';
 
 interface CheckoutViewProps {
   items: CartItem[];
@@ -38,8 +37,8 @@ interface OrderConfirmation {
 }
 
 /**
- * Full Checkout page with shipping address form, 3 payment method selectors
- * (Bank Transfer, Mobile Money, Card), order summary, and confirmation receipt.
+ * Full Checkout page with shipping address form, payment method selectors
+ * (Card, Bank Transfer, and Bitcoin (BTC) Coming Soon), order summary, and confirmation receipt.
  */
 export function CheckoutView({
   items,
@@ -65,8 +64,6 @@ export function CheckoutView({
   const [cardNumber, setCardNumber] = useState('');
   const [cardExpiry, setCardExpiry] = useState('');
   const [cardCvc, setCardCvc] = useState('');
-  const [mobileProvider, setMobileProvider] = useState('M-Pesa / MTN Mobile Money');
-  const [mobileNumber, setMobileNumber] = useState('');
   const [bankReference, setBankReference] = useState('');
 
   const [errorMessage, setErrorMessage] = useState('');
@@ -76,6 +73,13 @@ export function CheckoutView({
     e.preventDefault();
     setErrorMessage('');
 
+    if (paymentMethod === 'bitcoin') {
+      setErrorMessage(
+        'Bitcoin (BTC) checkout is coming soon and cannot process payments without verified settlement. Please select Card or Bank Transfer to place your order.'
+      );
+      return;
+    }
+
     if (!fullName.trim() || !email.trim() || !phone.trim() || !street.trim() || !city.trim() || !postalCode.trim()) {
       setErrorMessage('Please complete all required shipping fields before placing your order.');
       return;
@@ -83,11 +87,6 @@ export function CheckoutView({
 
     if (paymentMethod === 'card' && (cardNumber.replace(/\s+/g, '').length < 12 || !cardExpiry.trim() || !cardCvc.trim())) {
       setErrorMessage('Please enter valid card details or select another payment method.');
-      return;
-    }
-
-    if (paymentMethod === 'mobile-money' && !mobileNumber.trim()) {
-      setErrorMessage('Please provide the mobile money phone number for payment confirmation.');
       return;
     }
 
@@ -381,7 +380,10 @@ export function CheckoutView({
                   <button
                     type="button"
                     aria-pressed={paymentMethod === 'card'}
-                    onClick={() => setPaymentMethod('card')}
+                    onClick={() => {
+                      setPaymentMethod('card');
+                      setErrorMessage('');
+                    }}
                     className={`min-h-[56px] p-3.5 rounded-xl border text-left transition-all flex items-center gap-3 ${
                       paymentMethod === 'card'
                         ? 'bg-[#1E90FF]/15 border-[#1E90FF] text-white'
@@ -398,7 +400,10 @@ export function CheckoutView({
                   <button
                     type="button"
                     aria-pressed={paymentMethod === 'bank-transfer'}
-                    onClick={() => setPaymentMethod('bank-transfer')}
+                    onClick={() => {
+                      setPaymentMethod('bank-transfer');
+                      setErrorMessage('');
+                    }}
                     className={`min-h-[56px] p-3.5 rounded-xl border text-left transition-all flex items-center gap-3 ${
                       paymentMethod === 'bank-transfer'
                         ? 'bg-[#1E90FF]/15 border-[#1E90FF] text-white'
@@ -414,18 +419,23 @@ export function CheckoutView({
 
                   <button
                     type="button"
-                    aria-pressed={paymentMethod === 'mobile-money'}
-                    onClick={() => setPaymentMethod('mobile-money')}
+                    aria-pressed={paymentMethod === 'bitcoin'}
+                    onClick={() => {
+                      setPaymentMethod('bitcoin');
+                      setErrorMessage('');
+                    }}
                     className={`min-h-[56px] p-3.5 rounded-xl border text-left transition-all flex items-center gap-3 ${
-                      paymentMethod === 'mobile-money'
+                      paymentMethod === 'bitcoin'
                         ? 'bg-[#1E90FF]/15 border-[#1E90FF] text-white'
                         : 'bg-[#050B14] border-white/10 text-slate-200 hover:border-white/30'
                     }`}
                   >
-                    <Smartphone className="h-5 w-5 text-[#1E90FF] shrink-0" aria-hidden="true" />
-                    <div>
-                      <span className="block text-xs font-semibold">Mobile Money</span>
-                      <span className="block text-[11px] text-slate-300">M-Pesa / MTN / Airtel</span>
+                    <BitcoinIcon className="h-5 w-5 shrink-0" />
+                    <div className="min-w-0">
+                      <span className="block text-xs font-semibold">Bitcoin (BTC)</span>
+                      <span className="block text-[11px] text-amber-300 font-medium">
+                        Coming Soon
+                      </span>
                     </div>
                   </button>
                 </div>
@@ -522,39 +532,44 @@ export function CheckoutView({
                   </div>
                 )}
 
-                {paymentMethod === 'mobile-money' && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                    <div>
-                      <label htmlFor="mm-provider" className="block text-xs font-medium text-slate-200 mb-1.5">
-                        Mobile Wallet Network
-                      </label>
-                      <select
-                        id="mm-provider"
-                        value={mobileProvider}
-                        onChange={(e) => setMobileProvider(e.target.value)}
-                        className="w-full min-h-[44px] px-3.5 py-2.5 text-base sm:text-sm bg-[#050B14] text-white rounded-lg border border-white/15 focus:outline-none focus:border-[#1E90FF]"
-                      >
-                        <option value="M-Pesa / MTN Mobile Money">M-Pesa</option>
-                        <option value="MTN MoMo">MTN MoMo</option>
-                        <option value="Airtel Money">Airtel Money</option>
-                        <option value="Orange Money">Orange Money</option>
-                      </select>
+                {paymentMethod === 'bitcoin' && (
+                  <div className="bg-[#050B14] border border-amber-500/30 rounded-xl p-4 space-y-3 text-xs">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-2.5">
+                        <BitcoinIcon className="h-5 w-5 shrink-0" />
+                        <span className="text-sm font-semibold text-white">Bitcoin (BTC)</span>
+                      </div>
+                      <span className="inline-flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-wider text-amber-300">
+                        <Clock className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                        Coming Soon
+                      </span>
                     </div>
-                    <div>
-                      <label htmlFor="mm-number" className="block text-xs font-medium text-slate-200 mb-1.5">
-                        Registered Wallet Phone *
-                      </label>
-                      <input
-                        id="mm-number"
-                        type="tel"
-                        autoComplete="tel"
-                        aria-invalid={Boolean(errorMessage && paymentMethod === 'mobile-money' && !mobileNumber.trim())}
-                        aria-describedby={errorMessage ? 'checkout-error' : undefined}
-                        value={mobileNumber}
-                        onChange={(e) => setMobileNumber(e.target.value)}
-                        placeholder="+254 712 345 678"
-                        className="w-full min-h-[44px] px-3.5 py-2.5 text-base sm:text-sm font-mono bg-[#050B14] text-white placeholder:text-slate-400 rounded-lg border border-white/15 focus:outline-none focus:border-[#1E90FF]"
-                      />
+                    <p className="text-slate-300 leading-relaxed">
+                      Bitcoin (BTC) checkout is coming soon. Orders cannot be completed via BTC
+                      until an independent Bitcoin payment processor is connected to verify
+                      on-chain settlement.
+                    </p>
+                    <div className="flex flex-wrap gap-2 pt-1">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setPaymentMethod('card');
+                          setErrorMessage('');
+                        }}
+                        className="min-h-[40px] px-3.5 py-2 rounded-lg bg-[#1673D6] hover:bg-[#1E90FF] text-white text-xs font-semibold transition-colors"
+                      >
+                        Use Card Instead
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setPaymentMethod('bank-transfer');
+                          setErrorMessage('');
+                        }}
+                        className="min-h-[40px] px-3.5 py-2 rounded-lg bg-[#0A1220] border border-white/15 text-slate-200 hover:text-white text-xs font-semibold transition-colors"
+                      >
+                        Use Bank Transfer
+                      </button>
                     </div>
                   </div>
                 )}
@@ -628,36 +643,14 @@ export function CheckoutView({
                 </div>
               </div>
 
-              <div className="space-y-2.5">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                  <button
-                    type="submit"
-                    className="min-h-[44px] inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#1673D6] hover:bg-[#1E90FF] text-white text-xs sm:text-sm font-semibold shadow-lg shadow-[#1E90FF]/20 transition-all whitespace-nowrap"
-                  >
-                    <Lock className="h-4 w-4 shrink-0" aria-hidden="true" />
-                    Place Order · <span className="font-mono tabular-nums">${total.toFixed(2)}</span>
-                  </button>
-
-                  <a
-                    href={buildCartWhatsAppUrl({
-                      items,
-                      total,
-                      country,
-                    })}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Order cart via WhatsApp (opens in a new tab)"
-                    className="min-h-[44px] inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#050B14] border border-[#25D366]/55 text-[#25D366] hover:bg-[#25D366]/10 text-xs sm:text-sm font-semibold transition-colors whitespace-nowrap"
-                  >
-                    <WhatsAppIcon className="h-4 w-4 shrink-0" />
-                    Order via WhatsApp
-                  </a>
-                </div>
-
-                <p className="text-xs text-slate-300">
-                  Prefer to talk first? Order through WhatsApp and we&apos;ll confirm everything with you.
-                </p>
-              </div>
+              <button
+                type="submit"
+                disabled={paymentMethod === 'bitcoin'}
+                className="w-full min-h-[44px] inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#1673D6] hover:bg-[#1E90FF] disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs sm:text-sm font-semibold shadow-lg shadow-[#1E90FF]/20 transition-all whitespace-nowrap"
+              >
+                <Lock className="h-4 w-4 shrink-0" aria-hidden="true" />
+                Place Order · <span className="font-mono tabular-nums">${total.toFixed(2)}</span>
+              </button>
             </aside>
           </form>
         )}

@@ -1,5 +1,6 @@
-import { Building2, CreditCard, Globe, Mail, MapPin, Phone, Smartphone } from 'lucide-react';
+import { Building2, CreditCard, Globe, Mail, MapPin, Phone } from 'lucide-react';
 import { PolicyType } from '../types';
+import { BitcoinIcon } from './BitcoinIcon';
 
 interface FooterProps {
   brandName: string;
@@ -58,13 +59,18 @@ export function Footer({
           </div>
 
           <div className="bg-[#0A1220] border border-white/10 rounded-xl p-5 flex items-start gap-4">
-            <div className="h-10 w-10 rounded-lg bg-[#1E90FF]/10 border border-[#1E90FF]/20 flex items-center justify-center shrink-0">
-              <Smartphone className="h-5 w-5 text-[#1E90FF]" aria-hidden="true" />
+            <div className="h-10 w-10 rounded-lg bg-[#F7931A]/10 border border-[#F7931A]/25 flex items-center justify-center shrink-0">
+              <BitcoinIcon className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="font-serif text-base font-bold text-white">Mobile Money Wallets</h3>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h3 className="font-serif text-base font-bold text-white">Bitcoin (BTC)</h3>
+                <span className="text-[10px] font-mono uppercase tracking-wider text-amber-300">
+                  Coming Soon
+                </span>
+              </div>
               <p className="mt-1 text-xs text-slate-400 leading-relaxed">
-                Seamless checkout via M-Pesa, MTN MoMo, Airtel Money, and Orange Money.
+                Verified Bitcoin (BTC) settlement support is coming soon upon payment processor integration.
               </p>
             </div>
           </div>

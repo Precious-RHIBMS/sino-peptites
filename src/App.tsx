@@ -14,7 +14,6 @@ import { ProductGrid, SortOption } from './components/ProductGrid';
 import { ProductModal } from './components/ProductModal';
 import { StoryAndCertificates } from './components/StoryAndCertificates';
 import { TestimonialsSection } from './components/TestimonialsSection';
-import { WhatsAppFloatButton } from './components/WhatsAppFloatButton';
 import { useAuth } from './context/AuthContext';
 import { CATEGORIES, CERTIFICATES, PRODUCTS, STORE_CONFIG, TESTIMONIALS } from './products.js';
 import { CartItem, PolicyType, Product, ProductVariant } from './types';
@@ -170,6 +169,21 @@ export default function App() {
 
     return matched;
   }, [activeCategory, searchQuery, sortBy]);
+
+  const relatedProducts = useMemo(() => {
+    if (!selectedProduct) return [];
+    const catalog = PRODUCTS as Product[];
+    const sameCategory = catalog.filter(
+      (p) => p.id !== selectedProduct.id && p.categoryId === selectedProduct.categoryId
+    );
+    if (sameCategory.length >= 4) {
+      return sameCategory.slice(0, 4);
+    }
+    const others = catalog.filter(
+      (p) => p.id !== selectedProduct.id && p.categoryId !== selectedProduct.categoryId
+    );
+    return [...sameCategory, ...others].slice(0, 4);
+  }, [selectedProduct]);
 
   // Smooth section navigation (exits about/checkout views if active)
   const handleNavigateSection = (sectionId: string) => {
@@ -355,7 +369,6 @@ export default function App() {
               onSearchChange={setSearchQuery}
               sortBy={sortBy}
               onSortChange={setSortBy}
-              selectedCountry={selectedCountry}
               onSelectProduct={setSelectedProduct}
               onResetFilters={handleResetFilters}
             />
@@ -381,8 +394,9 @@ export default function App() {
       {/* 8. Product Detail Modal */}
       <ProductModal
         product={selectedProduct}
-        selectedCountry={selectedCountry}
+        relatedProducts={relatedProducts}
         onClose={() => setSelectedProduct(null)}
+        onSelectRelatedProduct={setSelectedProduct}
         onAddToCart={handleAddToCart}
       />
 
@@ -394,7 +408,6 @@ export default function App() {
         shippingFee={shippingFee}
         freeThreshold={effectiveFreeThreshold}
         total={grandTotal}
-        selectedCountry={selectedCountry}
         onClose={() => setIsCartOpen(false)}
         onUpdateQuantity={handleUpdateCartQuantity}
         onRemoveItem={handleRemoveCartItem}
@@ -418,8 +431,7 @@ export default function App() {
         onClose={() => setIsAccountOpen(false)}
       />
 
-      {/* 12. Floating WhatsApp Chat & Dismissible Cookie Banner */}
-      <WhatsAppFloatButton />
+      {/* 12. Dismissible Cookie Banner */}
       <CookieBanner onOpenPrivacy={setActivePolicy} />
     </div>
   );

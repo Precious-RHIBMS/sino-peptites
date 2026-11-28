@@ -18,7 +18,7 @@ function getInitialVisibility(): boolean {
 }
 
 /**
- * Compact dismissible cookie consent banner positioned away from the floating WhatsApp launcher.
+ * Compact dismissible cookie consent banner.
  */
 export function CookieBanner({ onOpenPrivacy }: CookieBannerProps) {
   const [visible, setVisible] = useState<boolean>(getInitialVisibility);
@@ -38,7 +38,7 @@ export function CookieBanner({ onOpenPrivacy }: CookieBannerProps) {
     <div
       role="region"
       aria-label="Cookie preferences"
-      className="fixed bottom-18 sm:bottom-4 left-4 right-4 sm:right-auto sm:max-w-md z-30 bg-[#0A1220] border border-white/15 rounded-xl p-4 shadow-2xl"
+      className="fixed bottom-4 left-4 right-4 sm:right-auto sm:max-w-md z-30 bg-[#0A1220] border border-white/15 rounded-xl p-4 shadow-2xl"
     >
       <div className="flex items-start gap-3">
         <Cookie className="h-4 w-4 text-[#1E90FF] shrink-0 mt-1" aria-hidden="true" />

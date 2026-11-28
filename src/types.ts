@@ -23,6 +23,7 @@ export interface Product {
   categoryId: string;
   categoryName: string;
   image: string;
+  images?: string[];
   imageBg?: string;
   purityNote: string;
   shortDescription: string;
